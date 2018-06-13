@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     List <String> list;
+    List <String> titlelist;
     ListAdapter adapter;
     MediaPlayer mediaPlayer;
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
 //=================================================================================================================
 
+    //Get mp3 file names/locations
     public void getMusic(){
 
         ContentResolver contentResolver=getContentResolver();
@@ -69,9 +71,14 @@ public class MainActivity extends AppCompatActivity {
             int songTitle=songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songLocation=songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             do{
+
+                //Get the location and title of all songs from storage and put them in two different lists.
+                //list holds the path (for playback) and titlelist holds the title (to be displayed).
+                //Indexes on both lists are the same.
                 String currentTitle=songCursor.getString(songTitle);
                 String currentLocation=songCursor.getString(songLocation);
                 list.add(currentLocation);
+                titlelist.add(currentTitle);
 
             }while(songCursor.moveToNext());
         }
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 //===================================================================================================================end getMusic()
 
+    //Permissions
     public void onRequestPermissionResult(int requestCode, String[]permissions, int[]grantResults){
 
         switch (requestCode){
@@ -104,10 +112,11 @@ public class MainActivity extends AppCompatActivity {
 
         listView=findViewById(R.id.listView);
         list=new ArrayList<>();
+        titlelist=new ArrayList<>();
 
         getMusic();
 
-        adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
