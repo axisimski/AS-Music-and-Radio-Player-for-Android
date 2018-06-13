@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -118,17 +119,22 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayer.release();
                 }
 
-             //   int resID=getResources().getIdentifier(list.get(i), "raw",getPackageName());
-               // mediaPlayer=MediaPlayer.create(this, );
+                mediaPlayer=new MediaPlayer();
+                Uri uri=Uri.parse(list.get(i));
 
 
                 try {
-                    mediaPlayer.setDataSource(list.get(i));
-                    mediaPlayer.prepare();
+                    mediaPlayer.setDataSource(MainActivity.this, uri);
+
+                    if (mediaPlayer != null) {
+                        mediaPlayer.prepare();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                mediaPlayer.start();
+                if (mediaPlayer != null) {
+                    mediaPlayer.start();
+                }
 
 
             }
