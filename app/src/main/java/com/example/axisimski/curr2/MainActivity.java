@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                       new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MPR);
           }
 
-      }//else //doSTUFF
+      }else{doStuff();}
     }
 
 
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             do{
                 String currentTitle=songCursor.getString(songTitle);
+                list.add(currentTitle);
 
             }while(songCursor.moveToNext());
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
+//=================================================================================================================
 
     public void onRequestPermissionResult(int requestCode, String[]permissions, int[]grantResults){
 
@@ -87,11 +88,42 @@ public class MainActivity extends AppCompatActivity {
                     if(ContextCompat.checkSelfPermission(MainActivity.this,
                             Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
                         Toast.makeText(this,"PMG!", Toast.LENGTH_SHORT).show();
+                        doStuff();
+                    }else {
+                        Toast.makeText(this, "NPMG!",Toast.LENGTH_SHORT).show();
+                        finish();
                     }
+                    return;
 
                 }
             }
         }
+
+    }
+
+    public void doStuff(){
+
+
+        listView=(ListView)findViewById(R.id.listView);
+
+        list=new ArrayList<>();
+
+        getMusic();
+
+        adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        listView.setAdapter(adapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+
+
+
+            }
+        });
+
+
 
     }
 
