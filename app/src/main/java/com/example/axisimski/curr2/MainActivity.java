@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,31 +55,28 @@ public class MainActivity extends AppCompatActivity {
       }else{doStuff();}
     }
 
+//=================================================================================================================
 
     public void getMusic(){
+
         ContentResolver contentResolver=getContentResolver();
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor=  contentResolver.query(songUri, null, null, null, null);
 
-
         if(songCursor!=null&&songCursor.moveToFirst()){
 
             int songTitle=songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-
-
-
+            int songLocation=songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             do{
                 String currentTitle=songCursor.getString(songTitle);
-                list.add(currentTitle);
+                String currentLocation=songCursor.getString(songLocation);
+                list.add(currentLocation);
 
             }while(songCursor.moveToNext());
-
         }
-
-
     }
 
-//=================================================================================================================
+//===================================================================================================================end getMusic()
 
     public void onRequestPermissionResult(int requestCode, String[]permissions, int[]grantResults){
 
@@ -100,12 +98,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+//===================================================================================================================end ORPR();
     public void doStuff(){
 
-
-        listView=(ListView)findViewById(R.id.listView);
-
+        listView=findViewById(R.id.listView);
         list=new ArrayList<>();
 
         getMusic();
@@ -113,11 +109,26 @@ public class MainActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         listView.setAdapter(adapter);
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
 
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+
+                if(mediaPlayer!=null){
+                    mediaPlayer.release();
+                }
+
+             //   int resID=getResources().getIdentifier(list.get(i), "raw",getPackageName());
+               // mediaPlayer=MediaPlayer.create(this, );
+
+
+                try {
+                    mediaPlayer.setDataSource(list.get(i));
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.start();
 
 
             }
@@ -126,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
+//===================================================================================================================end doStuff();
 
 
 
