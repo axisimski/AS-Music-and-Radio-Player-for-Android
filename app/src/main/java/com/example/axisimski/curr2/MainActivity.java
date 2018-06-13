@@ -2,6 +2,7 @@ package com.example.axisimski.curr2;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -124,27 +125,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
-                if(mediaPlayer!=null){
-                    mediaPlayer.release();
-                }
-
-                mediaPlayer=new MediaPlayer();
                 Uri uri=Uri.parse(list.get(i));
-
-
-                try {
-                    mediaPlayer.setDataSource(MainActivity.this, uri);
-
-                    if (mediaPlayer != null) {
-                        mediaPlayer.prepare();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (mediaPlayer != null) {
-                    mediaPlayer.start();
-                }
-
+                Intent intent=new Intent(MainActivity.this, PlayBackActivity.class);
+                intent.putExtra("URI",list.get(i));
+                startActivity(intent);
 
             }
         });
