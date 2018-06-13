@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -25,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView=findViewById(R.id.songList);
+        listView=(ListView)findViewById(R.id.listView);
+
         list=new ArrayList<>();
 
         Field[] fields=R.raw.class.getFields();
@@ -34,15 +36,26 @@ public class MainActivity extends AppCompatActivity {
             list.add(fields[i].getName());
         }
 
+        list.remove(0);
+        list.remove(0);
+
 
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
 
 
 
-        listView.setOnClickListener(new View.OnClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+
+                if(mediaPlayer!=null){
+                    mediaPlayer.release();
+                }
+
+                int resID=getResources().getIdentifier(list.get(i), "raw",getPackageName());
+                mediaPlayer=MediaPlayer.create(MainActivity.this, resID);
+                mediaPlayer.start();
 
             }
         });
