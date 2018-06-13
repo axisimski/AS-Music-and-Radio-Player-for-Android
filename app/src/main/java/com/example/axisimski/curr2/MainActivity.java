@@ -1,6 +1,10 @@
 package com.example.axisimski.curr2;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +19,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MPR=1;
 
     ListView listView;
     List <String> list;
@@ -26,40 +31,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView=(ListView)findViewById(R.id.listView);
+      if(ContextCompat.checkSelfPermission(MainActivity.this,
+              Manifest.permission.READ_EXTERNAL_STORAGE)
+          !=PackageManager.PERMISSION_GRANTED){
 
-        list=new ArrayList<>();
+          if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                  Manifest.permission.READ_EXTERNAL_STORAGE)){
+              ActivityCompat.requestPermissions(MainActivity.this,
+                      new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MPR);
+          }
 
-        Field[] fields=R.raw.class.getFields();
+          else{
+              ActivityCompat.requestPermissions(MainActivity.this,
+                      new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MPR);
+          }
 
-        for(int i=0;i<fields.length;i++){
-            list.add(fields[i].getName());
-        }
-
-        list.remove(0);
-        list.remove(0);
-
-
-        adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        listView.setAdapter(adapter);
-
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
-
-                if(mediaPlayer!=null){
-                    mediaPlayer.release();
-                }
-
-                int resID=getResources().getIdentifier(list.get(i), "raw",getPackageName());
-                mediaPlayer=MediaPlayer.create(MainActivity.this, resID);
-                mediaPlayer.start();
-
-            }
-        });
-
-
+      }else //doSTUFF
     }
+
+
+    public void getMusic(){}
+
+
+
+
+
+
+
+
+
+
 }
