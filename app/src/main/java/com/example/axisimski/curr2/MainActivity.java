@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ListAdapter adapter;
     Button play_button;
     SeekBar seekBar;
-    boolean isPlaying=true;
+    boolean isPlaying=false;
 
     //temporary varriables until sharedPref is implemented
     String lastSong="";
@@ -76,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isPlaying) {
                     stopService(new Intent(MainActivity.this, MusicService.class));
+                    isPlaying=false;
+                }
+
+                else {
+                    Toast.makeText(MainActivity.this,"SongLoc:"+lastSong, Toast.LENGTH_LONG ).show();//++++++++++++temp
+
+                    Intent intent=new Intent(MainActivity.this, MusicService.class);
+                    intent.putExtra("URI",lastSong);
+                    startService(intent);
+                    isPlaying=true;
                 }
 
 
@@ -152,15 +162,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
+
+                lastSong=list.get(i);
+                isPlaying=true;
                 //stop previous service so two songs don't play at the same time
                 stopService(new Intent(MainActivity.this, MusicService.class));
+
 
                 //Start new service and pass song location trough intent
                 Intent intent=new Intent(MainActivity.this, MusicService.class);
                 intent.putExtra("URI",list.get(i));
                 startService(intent);
 
-                isPlaying=true;
+
+
 
             }
         });//-----------------------------------------------------------------------------------
