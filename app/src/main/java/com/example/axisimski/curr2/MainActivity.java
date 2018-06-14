@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     //temporary varriables until sharedPref is implemented
     int seek=1;
+    ListView listView2;
 
     //==============================================================================================Begin onCreate()
     @Override
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         play_button=findViewById(R.id.play_button);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
-
+        listView2=findViewById(R.id.listView); //hook up both here?
         //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -226,15 +227,51 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
 
                 ArrayList<String> templist=new ArrayList<>();
+                final ArrayList<String> templist2=new ArrayList<>();
 
                 for(String temp:titlelist){
 
                     if(temp.toLowerCase().contains(newText.toLowerCase())){
+
+                      String s=  list.get(titlelist.indexOf(temp));
+
+                        templist2.add(s);
                         templist.add(temp);
                     }
                 }
                 adapter=new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, templist);
-                listView.setAdapter(adapter);
+                listView2.setAdapter(adapter);
+
+                listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+
+
+                        lastSong=list.get(i);
+
+                        //stop previous service so two songs don't play at the same time
+
+                        unbindService();
+                        stopService(intent);
+                        intent.removeExtra("URI");
+
+                        //Start new service and pass song location trough intent
+                        intent.putExtra("URI",templist2.get(i));
+                        startService(intent);
+                        bindService();
+                        isPlaying=true;
+
+                        // seek=MusicService.fuck;
+                        //String tr=Integer.toString(seek);
+                        //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+                        //  seekBar.setMax(240000);
+
+                    }
+                });//---------------------------------------------------------------------------------------end LVOCL
+
+
+
 
 
                 return true;
