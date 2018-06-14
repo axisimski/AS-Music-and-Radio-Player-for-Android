@@ -32,14 +32,16 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int MPR=1;
-
     ListView listView;
     List <String> list;
     List <String> titlelist;
     ListAdapter adapter;
-    MediaPlayer mediaPlayer;
     Button play_button;
     SeekBar seekBar;
+    boolean isPlaying=true;
+
+    //temporary varriables until sharedPref is implemented
+    String lastSong="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +68,20 @@ public class MainActivity extends AppCompatActivity {
         play_button=findViewById(R.id.play_button);
         seekBar=findViewById(R.id.seekBar);
 
-
         //------------------------------------------------------------------------------------------
+
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  startService(new Intent(MainActivity.this, MusicService.class));
+
+                if(isPlaying) {
+                    stopService(new Intent(MainActivity.this, MusicService.class));
+                }
+
+
 
             }
         });
-
 
     }//=======end of OnCreate()
 
@@ -140,21 +146,26 @@ public class MainActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
         listView.setAdapter(adapter);
 
+        //-----------------------------------------------------------------------------------listView onClickListener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
+                //stop previous service so two songs don't play at the same time
+                stopService(new Intent(MainActivity.this, MusicService.class));
+
+                //Start new service and pass song location trough intent
                 Intent intent=new Intent(MainActivity.this, MusicService.class);
-               // intent.putExtra("URI",list.get(i));
-                intent.putExtra("URI","WORsdfdfsdfsfsfsdfsdKS!?");
+                intent.putExtra("URI",list.get(i));
                 startService(intent);
 
-               // startService(new Intent(MainActivity.this, MusicService.class));
-
+                isPlaying=true;
 
             }
-        });
+        });//-----------------------------------------------------------------------------------
+
+
 
 
 

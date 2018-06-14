@@ -29,8 +29,6 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
 
-
-
        mediaPlayer=new MediaPlayer();
 
        try {
@@ -45,6 +43,8 @@ public class MusicService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mediaPlayer.start();
 
         return super.onStartCommand(intent,flags,startID);
     }
