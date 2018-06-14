@@ -48,8 +48,12 @@ public class MusicService extends Service {
       //  new Thread(new Runnable() {
          // @Override
          //  public void run() {
+            int bar=0;
 
                try {
+
+                    bar=intent.getIntExtra("SEEK",0);//====================--
+
                    String songDataLocation= intent.getStringExtra("URI");
                    Uri uri=Uri.parse(songDataLocation);
                    mediaPlayer.setDataSource(getApplicationContext(), uri);
@@ -66,6 +70,10 @@ public class MusicService extends Service {
                }
                mediaPlayer.start();
 
+               //Stuff bellow probably needs to be changed
+               if(bar!=0) {
+                   mediaPlayer.seekTo(bar);
+               }
                int x=mediaPlayer.getDuration();
                fuck=x;
 

@@ -55,11 +55,12 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection;
     private Intent intent;
 
-
+    ListView listView2; //This populates the adapter on Search //see menu function
 
     //temporary varriables until sharedPref is implemented
     int seek=1;
-    ListView listView2;
+    boolean ButtonPressed=false;
+
 
     //==============================================================================================Begin onCreate()
     @Override
@@ -110,20 +111,73 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
                     seekBar.setMax(seek);
 
+                    ButtonPressed=true;
+
                 }
             }
         });//---------------------------------------------------------------------------------------
 
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+             if(ButtonPressed){
+
+
+                 unbindService();
+                 stopService(intent);
+                 intent.removeExtra("URI");
+                 intent.putExtra("URI",lastSong);
+                 intent.putExtra("SEEK", progress);
+                 startService(intent);
+              //   bindService();
+              //   isPlaying=true;
+
+                 Toast.makeText(MainActivity.this,"OKSOFAR", Toast.LENGTH_SHORT).show();
+
+
+                 //    seek=MusicService.getMaxDuration();
+             //    String tr=Integer.toString(seek);
+            //     Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+             }
+
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //#############################################################################################SEEKBAR WS ABOVE
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
-
                 lastSong=list.get(i);
 
                 //stop previous service so two songs don't play at the same time
-
                 unbindService();
                 stopService(intent);
                 intent.removeExtra("URI");
@@ -138,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 //String tr=Integer.toString(seek);
                 //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
                 //  seekBar.setMax(240000);
-
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
@@ -185,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     }
 //==================================================================================================end populateList();
 
-     private void bindService(){
+    private void bindService(){
         if(serviceConnection==null){
             serviceConnection=new ServiceConnection() {
                 @Override
@@ -212,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //==================================================================================================//end unbindService();
-
 
     public boolean onCreateOptionsMenu(Menu menu){
 
@@ -271,9 +323,6 @@ public class MainActivity extends AppCompatActivity {
                 });//---------------------------------------------------------------------------------------end LVOCL
 
 
-
-
-
                 return true;
             }
 
@@ -286,8 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
-
+//==================================================================================================end SearchMenu();
 
 
 
