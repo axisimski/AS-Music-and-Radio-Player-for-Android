@@ -36,24 +36,23 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int MPR=1;
-    ListView listView;
-    List <String> list;
-    List <String> titlelist;
+    ListView listView; //listView to display song names
+    List <String> list; //list storing song location strings
+    List <String> titlelist; //list storing song titles
     ListAdapter adapter;
-    Button play_button;
-    SeekBar seekBar;
-    boolean isPlaying=false;
+    Button play_button; //Play/Pause
+    SeekBar seekBar; //Seekbar (hopefully it will end up working).
+    boolean isPlaying=false; //is the song currently playing (for pause, changeing songs etc)
+    String lastSong=""; //string location of last song been played.
 
     private MusicService MusicService;
-    private boolean bound;
+    private boolean bound; //Is the Service currently bound
     private ServiceConnection serviceConnection;
     private Intent intent;
 
 
 
     //temporary varriables until sharedPref is implemented
-    String lastSong="";
-
     int seek=1;
 
     @Override
@@ -61,25 +60,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
         seekBar=findViewById(R.id.seekBar);
+        listView=findViewById(R.id.listView);
 
         //------------------------------------------------------------------------------------------
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED){
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
-            }
-        } else  {
-            doStuff(); //Function call();
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
+        }
+        else{
+            populateList(); //Function call to populate ListView;
         }
         //------------------------------------------------------------------------------------------
         play_button.setOnClickListener(new View.OnClickListener() {
@@ -87,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(isPlaying) {
-                    stopService(intent);
+
                     unbindService();
+                    stopService(intent);
+
                     isPlaying=false;
                 }
 
@@ -99,14 +97,50 @@ public class MainActivity extends AppCompatActivity {
                     bindService();
                     isPlaying=true;
 
+                    seek=MusicService.getMaxDuration();
+                    String tr=Integer.toString(seek);
+                    Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+                    seekBar.setMax(seek);
 
-                    seek=MusicService.mediaPlayer.getDuration();
                 }
 
 
 
             }
         });//------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------listView onClickListener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+
+
+                lastSong=list.get(i);
+
+                //stop previous service so two songs don't play at the same time
+
+                unbindService();
+                stopService(intent);
+                intent.removeExtra("URI");
+
+                //Start new service and pass song location trough intent
+                intent.putExtra("URI",list.get(i));
+                startService(intent);
+                bindService();
+                isPlaying=true;
+
+                // seek=MusicService.fuck;
+                //String tr=Integer.toString(seek);
+                //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+                //  seekBar.setMax(240000);
+
+
+
+            }
+        });//-----------------------------------------------------------------------------------
+
+
 
 
 
@@ -137,34 +171,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//===================================================================================================================end getMusic()
-    //Permissions
-    public void onRequestPermissionResult(int requestCode, String[]permissions, int[]grantResults){
-
-        switch (requestCode){
-            case MPR:{
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    if(ContextCompat.checkSelfPermission(MainActivity.this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
-                        Toast.makeText(this,"PMG!", Toast.LENGTH_SHORT).show();
-                        doStuff();
-                    }else {
-                        Toast.makeText(this, "NPMG!",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                    return;
-
-                }
-            }
-        }
-
-    }
 
 //===================================================================================================================end ORPR();
     //On click sends song uri to new activity and opens said activity
-    public void doStuff(){
+    public void populateList(){
 
-        listView=findViewById(R.id.listView);
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
 
@@ -173,38 +184,8 @@ public class MainActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
         listView.setAdapter(adapter);
 
-        //-----------------------------------------------------------------------------------listView onClickListener
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-
-
-                lastSong=list.get(i);
-                isPlaying=true;
-                //stop previous service so two songs don't play at the same time
-                stopService(intent);
-                unbindService();
-
-                //Start new service and pass song location trough intent
-                intent.removeExtra("URI");
-                intent.putExtra("URI",list.get(i));
-                startService(intent);
-                bindService();
-
-
-
-
-            }
-        });//-----------------------------------------------------------------------------------
-
-
-
-
-
-
     }
-//===================================================================================================================end doStuff();
+//===================================================================================================================end populateList();
 
 
 
@@ -227,10 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
         }
-        Intent intent=new Intent(MainActivity.this, MusicService.class);
-
-        bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
-
+           bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void unbindService(){

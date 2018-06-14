@@ -7,6 +7,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.text.GetChars;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -15,6 +19,9 @@ public class MusicService extends Service {
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
 
+    int fuck=0;
+
+
     class serviceBinder extends Binder{
         public MusicService getService(){
             return MusicService.this;
@@ -22,6 +29,7 @@ public class MusicService extends Service {
     }
 
     //====================================================================================================
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return dataBinder;
@@ -35,11 +43,11 @@ public class MusicService extends Service {
 
     //====================================================================================================
     @Override
-    public int onStartCommand(final Intent intent, int flags, int startID){
+    public int onStartCommand( Intent intent, int flags, int startID){
 
-       new Thread(new Runnable() {
-           @Override
-           public void run() {
+      //  new Thread(new Runnable() {
+         // @Override
+         //  public void run() {
 
                try {
                    String songDataLocation= intent.getStringExtra("URI");
@@ -47,16 +55,25 @@ public class MusicService extends Service {
                    mediaPlayer.setDataSource(getApplicationContext(), uri);
                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+
+
+
                    if (mediaPlayer != null) {
                        mediaPlayer.prepare();
                    }
                } catch (IOException e) {
                    e.printStackTrace();
                }
-
                mediaPlayer.start();
-           }
-       }).start();
+
+               int x=mediaPlayer.getDuration();
+               fuck=x;
+
+       //    }
+      // }).start();
+
+
+
 
         return super.onStartCommand(intent,flags,startID);
     }
@@ -67,5 +84,17 @@ public class MusicService extends Service {
     }
 
     //------------------------------------------------------------
+
+    public int getMaxDuration(){
+
+         if(mediaPlayer!=null){
+
+            return fuck;
+        }
+        return 9;
+    }
+
+
+
 
 }//end class
