@@ -17,8 +17,13 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             populateList(); //Function call to populate ListView;
         }//-----------------------------------------------------------------------------------------end CheckPermissions
 
+
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
                     seekBar.setMax(seek);
 
                 }
-
-
-
             }
         });//---------------------------------------------------------------------------------------
 
@@ -208,6 +211,52 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //==================================================================================================//end unbindService();
+
+
+    public boolean onCreateOptionsMenu(Menu menu){
+
+        MenuInflater inflater =getMenuInflater();
+
+        inflater.inflate(R.menu.menu, menu);
+        MenuItem searchItem=menu.findItem(R.id.item_search);
+        SearchView searchView= (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            public boolean onQueryTextChange(String newText) {
+
+                ArrayList<String> templist=new ArrayList<>();
+
+                for(String temp:titlelist){
+
+                    if(temp.toLowerCase().contains(newText.toLowerCase())){
+                        templist.add(temp);
+                    }
+                }
+                adapter=new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, templist);
+                listView.setAdapter(adapter);
+
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+        });
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+
+
+
+
+
 
 
 }//End class();
