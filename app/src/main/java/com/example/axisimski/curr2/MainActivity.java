@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     //temporary varriables until sharedPref is implemented
     int seek=1;
 
+    //==============================================================================================Begin onCreate()
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
 
-        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             populateList(); //Function call to populate ListView;
-        }
-        //------------------------------------------------------------------------------------------
+        }//-----------------------------------------------------------------------------------------end CheckPermissions
+
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,9 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-        });//------------------------------------------------------
+        });//---------------------------------------------------------------------------------------
 
-        //-----------------------------------------------------------------------------------listView onClickListener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -135,18 +135,13 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
                 //  seekBar.setMax(240000);
 
-
-
             }
-        });//-----------------------------------------------------------------------------------
+        });//---------------------------------------------------------------------------------------end LVOCL
 
 
+     }
+//==================================================================================================end onCreate();
 
-
-
-     }//=======end of OnCreate()
-
-//=================================================================================================================
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
 
@@ -170,9 +165,8 @@ public class MainActivity extends AppCompatActivity {
             }while(songCursor.moveToNext());
         }
     }
+//==================================================================================================end getMusic();
 
-
-//===================================================================================================================end ORPR();
     //On click sends song uri to new activity and opens said activity
     public void populateList(){
 
@@ -185,14 +179,9 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
     }
-//===================================================================================================================end populateList();
+//==================================================================================================end populateList();
 
-
-
-
-
-//##############################################################################################################Binding code below
-    private void bindService(){
+     private void bindService(){
         if(serviceConnection==null){
             serviceConnection=new ServiceConnection() {
                 @Override
@@ -210,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         }
            bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
     }
+//==================================================================================================//end bindService();
 
     private void unbindService(){
         if(bound){
@@ -217,8 +207,7 @@ public class MainActivity extends AppCompatActivity {
             bound=false;
         }
     }
-
-//####################################################################################################################
+//==================================================================================================//end unbindService();
 
 
 }//End class();
