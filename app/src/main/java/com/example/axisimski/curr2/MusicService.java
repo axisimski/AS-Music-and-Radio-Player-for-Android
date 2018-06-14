@@ -29,14 +29,13 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
 
+
+
        mediaPlayer=new MediaPlayer();
-       // Uri uri=Uri.parse(intent.getStringExtra("URI"));
 
-        String data=(String) intent.getExtras().getString("URI");
-
-        Toast.makeText(MusicService.this,"OK", Toast.LENGTH_SHORT).show();
-
-       /*  try {
+       try {
+            String songDataLocation= intent.getStringExtra("URI");
+            Uri uri=Uri.parse(songDataLocation);
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -45,7 +44,7 @@ public class MusicService extends Service {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
 
         return super.onStartCommand(intent,flags,startID);
     }

@@ -145,13 +145,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
-                Intent intent=new Intent(MainActivity.this, Service.class);
-                intent.putExtra("URI",list.get(i));
+                Intent intent=new Intent(MainActivity.this, MusicService.class);
+               // intent.putExtra("URI",list.get(i));
+                intent.putExtra("URI","WORsdfdfsdfsfsfsdfsdKS!?");
                 startService(intent);
 
-                startService(new Intent(MainActivity.this, MusicService.class));
+               // startService(new Intent(MainActivity.this, MusicService.class));
 
-                Toast.makeText(MainActivity.this,"Dostuffhapp", Toast.LENGTH_SHORT).show();
 
             }
         });
