@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private MusicService MusicService;
     private boolean bound;
     private ServiceConnection serviceConnection;
+    private Intent intent;
 
 
 
@@ -59,7 +60,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         //------------------------------------------------------------------------------------------
+
+        intent= new Intent(MainActivity.this,MusicService.class);
+        play_button=findViewById(R.id.play_button);
+        seekBar=findViewById(R.id.seekBar);
+
+        //------------------------------------------------------------------------------------------
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -76,26 +82,18 @@ public class MainActivity extends AppCompatActivity {
             doStuff(); //Function call();
         }
         //------------------------------------------------------------------------------------------
-
-        play_button=findViewById(R.id.play_button);
-        seekBar=findViewById(R.id.seekBar);
-
-        //------------------------------------------------------------------------------------------
-
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(isPlaying) {
-                    stopService(new Intent(MainActivity.this, MusicService.class));
+                    stopService(intent);
                     unbindService();
                     isPlaying=false;
                 }
 
                 else {
-                    Toast.makeText(MainActivity.this,"SongLoc:"+lastSong, Toast.LENGTH_LONG ).show();//++++++++++++temp
-
-                    Intent intent=new Intent(MainActivity.this, MusicService.class);
+                    intent.removeExtra("URI");
                     intent.putExtra("URI",lastSong);
                     startService(intent);
                     bindService();
@@ -185,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
                 lastSong=list.get(i);
                 isPlaying=true;
                 //stop previous service so two songs don't play at the same time
-                stopService(new Intent(MainActivity.this, MusicService.class));
+                stopService(intent);
                 unbindService();
 
                 //Start new service and pass song location trough intent
-                Intent intent=new Intent(MainActivity.this, MusicService.class);
+                intent.removeExtra("URI");
                 intent.putExtra("URI",list.get(i));
                 startService(intent);
                 bindService();
