@@ -43,11 +43,11 @@ public class MusicService extends Service {
 
     //====================================================================================================
     @Override
-    public int onStartCommand( Intent intent, int flags, int startID){
+    public int onStartCommand(final Intent intent, int flags, int startID){
 
-      //  new Thread(new Runnable() {
-         // @Override
-         //  public void run() {
+        new Thread(new Runnable() {
+          @Override
+           public void run() {
             int bar=0;
 
                try {
@@ -77,8 +77,8 @@ public class MusicService extends Service {
                int x=mediaPlayer.getDuration();
                fuck=x;
 
-       //    }
-      // }).start();
+           }
+       }).start();
 
 
 

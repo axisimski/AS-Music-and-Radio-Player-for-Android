@@ -128,20 +128,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                 unbindService();
-                 stopService(intent);
-                 intent.removeExtra("URI");
-                 intent.putExtra("URI",lastSong);
-                 intent.putExtra("SEEK", progress);
-                 startService(intent);
-                 bindService();
-                 isPlaying=true;
+                if(fromUser){
+                    unbindService();
+                    stopService(intent);
+                    intent.removeExtra("URI");
+                    intent.removeExtra("SEEK");
+                    intent.putExtra("URI",lastSong);
+                    intent.putExtra("SEEK", progress);
+                    startService(intent);
+                    bindService();
+                    isPlaying=true;
 
-                 Toast.makeText(MainActivity.this,"OKSOFAR", Toast.LENGTH_SHORT).show();
-
-
-
-
+                    Toast.makeText(MainActivity.this,"OKSOFAR", Toast.LENGTH_SHORT).show();
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -195,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         seek=MusicService.getMaxDuration();
-                      //  String tr=Integer.toString(seek);
-                       // Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+
                         seekBar.setMax(seek);
 
+
                     }
-                }, 2500);
+                }, 250);
 
 
             }
@@ -311,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
 
-                        lastSong=list.get(i);
+                        lastSong=templist2.get(i);
 
                         //stop previous service so two songs don't play at the same time
 
@@ -325,10 +324,19 @@ public class MainActivity extends AppCompatActivity {
                         bindService();
                         isPlaying=true;
 
-                        // seek=MusicService.fuck;
-                        //String tr=Integer.toString(seek);
-                        //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
-                        //  seekBar.setMax(240000);
+                        //Delay execution so service could properly start up!
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                seek=MusicService.getMaxDuration();
+
+                                seekBar.setMax(seek);
+
+
+                            }
+                        }, 250);
 
                     }
                 });//---------------------------------------------------------------------------------------end LVOCL
