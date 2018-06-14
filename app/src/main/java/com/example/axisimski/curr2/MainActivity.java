@@ -9,10 +9,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     //temporary varriables until sharedPref is implemented
     int seek=1;
-    boolean ButtonPressed=false;
 
 
     //==============================================================================================Begin onCreate()
@@ -92,10 +93,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(isPlaying) {
-
                     unbindService();
                     stopService(intent);
-
                     isPlaying=false;
                 }
 
@@ -106,12 +105,19 @@ public class MainActivity extends AppCompatActivity {
                     bindService();
                     isPlaying=true;
 
-                    seek=MusicService.getMaxDuration();
-                    String tr=Integer.toString(seek);
-                    Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
-                    seekBar.setMax(seek);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    ButtonPressed=true;
+                            seek=MusicService.getMaxDuration();
+                            String tr=Integer.toString(seek);
+                            Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+                            seekBar.setMax(seek);
+
+                        }
+                    }, 500);
+
 
                 }
             }
@@ -122,25 +128,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-             if(ButtonPressed){
-
-
                  unbindService();
                  stopService(intent);
                  intent.removeExtra("URI");
                  intent.putExtra("URI",lastSong);
                  intent.putExtra("SEEK", progress);
                  startService(intent);
-              //   bindService();
-              //   isPlaying=true;
+                 bindService();
+                 isPlaying=true;
 
                  Toast.makeText(MainActivity.this,"OKSOFAR", Toast.LENGTH_SHORT).show();
 
 
-                 //    seek=MusicService.getMaxDuration();
-             //    String tr=Integer.toString(seek);
-            //     Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
-             }
+
 
             }
             @Override
@@ -188,10 +188,21 @@ public class MainActivity extends AppCompatActivity {
                 bindService();
                 isPlaying=true;
 
-                // seek=MusicService.fuck;
-                //String tr=Integer.toString(seek);
-                //Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
-                //  seekBar.setMax(240000);
+                //Delay execution so service could properly start up!
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        seek=MusicService.getMaxDuration();
+                      //  String tr=Integer.toString(seek);
+                       // Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
+                        seekBar.setMax(seek);
+
+                    }
+                }, 2500);
+
+
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
