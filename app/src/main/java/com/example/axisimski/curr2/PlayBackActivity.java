@@ -1,5 +1,6 @@
 package com.example.axisimski.curr2;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -44,6 +45,8 @@ public class PlayBackActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         if (mediaPlayer != null) {
             mediaPlayer.start();
         }
@@ -88,13 +91,36 @@ public class PlayBackActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(mediaPlayer.isPlaying()){
+              /*  if(mediaPlayer.isPlaying()){
                     mediaPlayer.stop();
                     mediaPlayer.release();
                     handler.removeCallbacks(runnable);
                 }
 
-                else mediaPlayer.start();
+                else mediaPlayer.start();*/
+
+              startService(new Intent(PlayBackActivity.this, MusicService.class));
+
+            }
+        });
+
+
+        //++++++++++++++++++++++++++++++++++++++++++++++
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              /*  if(mediaPlayer.isPlaying()){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    handler.removeCallbacks(runnable);
+                }
+
+                else mediaPlayer.start();*/
+
+                stopService(new Intent(PlayBackActivity.this, MusicService.class));
+
             }
         });
 

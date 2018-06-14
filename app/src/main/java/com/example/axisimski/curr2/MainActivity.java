@@ -1,6 +1,7 @@
 package com.example.axisimski.curr2;
 
 import android.Manifest;
+import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -129,7 +130,13 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri=Uri.parse(list.get(i));
                 Intent intent=new Intent(MainActivity.this, PlayBackActivity.class);
                 intent.putExtra("URI",list.get(i));
+                //-------------------
+                Intent intent2=new Intent(MainActivity.this, Service.class);
+                intent2.putExtra("URI",list.get(i));
+                startService(intent2);
+                //-------------------
                 startActivity(intent);
+
 
             }
         });
