@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
@@ -17,8 +18,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -35,32 +38,48 @@ public class MainActivity extends AppCompatActivity {
     List <String> titlelist;
     ListAdapter adapter;
     MediaPlayer mediaPlayer;
+    Button play_button;
+    SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+         //------------------------------------------------------------------------------------------
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+         Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
-      if(ContextCompat.checkSelfPermission(MainActivity.this,
-              Manifest.permission.READ_EXTERNAL_STORAGE)
-          !=PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
+            }
+        } else  {
+            doStuff(); //Function call();
+        }
+        //------------------------------------------------------------------------------------------
 
-          if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                  Manifest.permission.READ_EXTERNAL_STORAGE)){
-              ActivityCompat.requestPermissions(MainActivity.this,
-                      new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MPR);
-          }
+        play_button=findViewById(R.id.play_button);
+        seekBar=findViewById(R.id.seekBar);
 
-          else{
-              ActivityCompat.requestPermissions(MainActivity.this,
-                      new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MPR);
-          }
 
-      }else{doStuff();}
-    }
+        //------------------------------------------------------------------------------------------
+        play_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  startService(new Intent(MainActivity.this, MusicService.class));
+
+            }
+        });
+
+
+    }//=======end of OnCreate()
 
 //=================================================================================================================
-
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
 
@@ -86,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //===================================================================================================================end getMusic()
-
     //Permissions
     public void onRequestPermissionResult(int requestCode, String[]permissions, int[]grantResults){
 
@@ -108,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-//===================================================================================================================end ORPR();
 
+//===================================================================================================================end ORPR();
     //On click sends song uri to new activity and opens said activity
     public void doStuff(){
 
@@ -127,19 +145,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
 
-                Uri uri=Uri.parse(list.get(i));
-                Intent intent=new Intent(MainActivity.this, PlayBackActivity.class);
+                Intent intent=new Intent(MainActivity.this, Service.class);
                 intent.putExtra("URI",list.get(i));
-                //-------------------
-                Intent intent2=new Intent(MainActivity.this, Service.class);
-                intent2.putExtra("URI",list.get(i));
-                startService(intent2);
-                //-------------------
-                startActivity(intent);
+                startService(intent);
 
+                startService(new Intent(MainActivity.this, MusicService.class));
+
+                Toast.makeText(MainActivity.this,"Dostuffhapp", Toast.LENGTH_SHORT).show();
 
             }
         });
+
 
 
 

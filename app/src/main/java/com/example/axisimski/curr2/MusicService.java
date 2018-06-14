@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -28,10 +29,14 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
 
-        mediaPlayer=new MediaPlayer();
-        Uri uri=Uri.parse(intent.getStringExtra("URI"));
+       mediaPlayer=new MediaPlayer();
+       // Uri uri=Uri.parse(intent.getStringExtra("URI"));
 
-        try {
+        String data=(String) intent.getExtras().getString("URI");
+
+        Toast.makeText(MusicService.this,"OK", Toast.LENGTH_SHORT).show();
+
+       /*  try {
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -40,7 +45,7 @@ public class MusicService extends Service {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return super.onStartCommand(intent,flags,startID);
     }

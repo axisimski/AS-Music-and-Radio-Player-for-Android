@@ -7,29 +7,4 @@
     android:layout_height="match_parent"
     tools:context=".PlayBackActivity">
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="274dp" />
-
-    <Button
-        android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="145dp"
-        android:text="Play" />
-
-    <Button
-        android:id="@+id/pauseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="104dp"
-        android:text="PAUSE" />
 </RelativeLayout>
