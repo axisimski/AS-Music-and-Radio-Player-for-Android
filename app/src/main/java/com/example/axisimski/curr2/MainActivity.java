@@ -57,10 +57,15 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection;
     private Intent intent;
 
+
+
+
     ListView listView2; //This populates the adapter on Search //see menu function
 
     //temporary varriables until sharedPref is implemented
     int seek=1;
+    Runnable runnable;
+    Handler handlerSB;
 
 
     //==============================================================================================Begin onCreate()
@@ -115,10 +120,11 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
                             seekBar.setMax(seek);
 
+
                         }
                     }, 500);
 
-
+                   // playCycle();
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -186,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
                 startService(intent);
                 bindService();
                 isPlaying=true;
+
+
 
                 //Delay execution so service could properly start up!
                 final Handler handler = new Handler();
@@ -358,7 +366,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public void playCycle(){
 
+        seekBar.setProgress(MusicService.getCurrentPosition());
+
+        if(isPlaying){
+            runnable=new Runnable() {
+                @Override
+                public void run() {
+                    playCycle();
+                }
+            };
+             handlerSB.postDelayed(runnable, 100);
+        }
+
+    }
 
 
 

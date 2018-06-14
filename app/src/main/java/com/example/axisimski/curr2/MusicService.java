@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.GetChars;
@@ -19,8 +20,7 @@ public class MusicService extends Service {
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
 
-    int fuck=0;
-
+    int seekMax=0;
 
     class serviceBinder extends Binder{
         public MusicService getService(){
@@ -70,12 +70,17 @@ public class MusicService extends Service {
                }
                mediaPlayer.start();
 
+
+
+
                //Stuff bellow probably needs to be changed
                if(bar!=0) {
                    mediaPlayer.seekTo(bar);
                }
-               int x=mediaPlayer.getDuration();
-               fuck=x;
+
+
+              seekMax=mediaPlayer.getDuration();
+
 
            }
        }).start();
@@ -95,11 +100,21 @@ public class MusicService extends Service {
 
     public int getMaxDuration(){
 
-         if(mediaPlayer!=null){
-
-            return fuck;
+        if(mediaPlayer!=null){
+            return seekMax;
         }
-        return 9;
+
+        return 0;
+    }
+
+
+    public int getCurrentPosition(){
+
+        if(mediaPlayer!=null){
+            return mediaPlayer.getCurrentPosition();
+        }
+
+        return 0;
     }
 
 
