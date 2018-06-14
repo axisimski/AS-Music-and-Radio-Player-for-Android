@@ -21,7 +21,6 @@
         </activity>
         <service android:name=".MusicService"
             android:enabled="true"/>
-        <activity android:name=".PlayBackActivity" />
     </application>
 
 </manifest>
