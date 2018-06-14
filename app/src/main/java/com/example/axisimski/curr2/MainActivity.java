@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
 //=================================================================================================================
 
-    //Get mp3 file names/locations
+    //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
 
         ContentResolver contentResolver=getContentResolver();
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             int songTitle=songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songLocation=songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             do{
-
                 //Get the location and title of all songs from storage and put them in two different lists.
                 //list holds the path (for playback) and titlelist holds the title (to be displayed).
                 //Indexes on both lists are the same.
@@ -109,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 //===================================================================================================================end ORPR();
+
+    //On click sends song uri to new activity and opens said activity
     public void doStuff(){
 
         listView=findViewById(R.id.listView);
@@ -147,4 +148,4 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-}
+}//End class();

@@ -17,7 +17,7 @@ public class PlayBackActivity extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
     SeekBar seekBar;
-    Button playButton;
+    Button playButton, pauseButton;
     MediaPlayer mediaPlayer;
 
     @Override
@@ -28,6 +28,7 @@ public class PlayBackActivity extends AppCompatActivity {
         handler=new Handler();
         seekBar=findViewById(R.id.seekBar);
         playButton=findViewById(R.id.playButton);
+        pauseButton=findViewById(R.id.pauseButton);
 
         //Prep Media Player, including URI info from intent
         mediaPlayer=new MediaPlayer();
@@ -82,6 +83,7 @@ public class PlayBackActivity extends AppCompatActivity {
         });
 
 
+        //Play Button temp onClickListener();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +100,7 @@ public class PlayBackActivity extends AppCompatActivity {
 
 
     }
-    //end of OnCreate();
+    //=============================================================================================//end of OnCreate();
 
 
 
