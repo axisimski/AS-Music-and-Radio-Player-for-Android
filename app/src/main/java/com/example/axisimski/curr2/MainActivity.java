@@ -2,14 +2,18 @@ package com.example.axisimski.curr2;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
     Button play_button;
     SeekBar seekBar;
     boolean isPlaying=false;
+
+    private MusicService MusicService;
+    private boolean bound;
+    private ServiceConnection serviceConnection;
+
+
 
     //temporary varriables until sharedPref is implemented
     String lastSong="";
@@ -76,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isPlaying) {
                     stopService(new Intent(MainActivity.this, MusicService.class));
+                    unbindService();
                     isPlaying=false;
                 }
 
@@ -85,15 +96,18 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent=new Intent(MainActivity.this, MusicService.class);
                     intent.putExtra("URI",lastSong);
                     startService(intent);
+                    bindService();
                     isPlaying=true;
                 }
 
 
 
             }
-        });
+        });//------------------------------------------------------
 
-    }//=======end of OnCreate()
+
+
+     }//=======end of OnCreate()
 
 //=================================================================================================================
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
@@ -167,12 +181,15 @@ public class MainActivity extends AppCompatActivity {
                 isPlaying=true;
                 //stop previous service so two songs don't play at the same time
                 stopService(new Intent(MainActivity.this, MusicService.class));
-
+                unbindService();
 
                 //Start new service and pass song location trough intent
                 Intent intent=new Intent(MainActivity.this, MusicService.class);
                 intent.putExtra("URI",list.get(i));
                 startService(intent);
+                bindService();
+
+                seekBar.setMax(MusicService.getMediaMax());
 
 
 
@@ -192,9 +209,37 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+//##############################################################################################################Binding code below
+    private void bindService(){
+        if(serviceConnection==null){
+            serviceConnection=new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
+                    MusicService=myServiceBinder.getService();
+                    bound=true;
+                }
 
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                    bound=false;
+                }
+            };
+        }
+        Intent intent=new Intent(MainActivity.this, MusicService.class);
 
+        bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
 
+    }
+
+    private void unbindService(){
+        if(bound){
+            unbindService(serviceConnection);
+            bound=false;
+        }
+    }
+
+//####################################################################################################################
 
 
 }//End class();

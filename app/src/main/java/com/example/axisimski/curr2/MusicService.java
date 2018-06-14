@@ -5,18 +5,26 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import java.io.IOException;
 
 public class MusicService extends Service {
 
     MediaPlayer mediaPlayer;
+    private IBinder dataBinder=new serviceBinder();
 
+    class serviceBinder extends Binder{
+        public MusicService getService(){
+            return MusicService.this;
+        }
+    }
+
+    //====================================================================================================
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return dataBinder;
     }
 
     //====================================================================================================
@@ -27,24 +35,29 @@ public class MusicService extends Service {
 
     //====================================================================================================
     @Override
-    public int onStartCommand(Intent intent, int flags, int startID){
+    public int onStartCommand(final Intent intent, int flags, int startID){
 
-       mediaPlayer=new MediaPlayer();
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               mediaPlayer=new MediaPlayer();
 
-       try {
-            String songDataLocation= intent.getStringExtra("URI");
-            Uri uri=Uri.parse(songDataLocation);
-            mediaPlayer.setDataSource(getApplicationContext(), uri);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+               try {
+                   String songDataLocation= intent.getStringExtra("URI");
+                   Uri uri=Uri.parse(songDataLocation);
+                   mediaPlayer.setDataSource(getApplicationContext(), uri);
+                   mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-            if (mediaPlayer != null) {
-                mediaPlayer.prepare();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                   if (mediaPlayer != null) {
+                       mediaPlayer.prepare();
+                   }
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
 
-        mediaPlayer.start();
+               mediaPlayer.start();
+           }
+       }).start();
 
         return super.onStartCommand(intent,flags,startID);
     }
@@ -52,6 +65,15 @@ public class MusicService extends Service {
     @Override
     public void onDestroy(){
         mediaPlayer.release();
+    }
+
+    //------------------------------------------------------------
+    public int getMediaMax(){
+        if(mediaPlayer!=null){
+            return mediaPlayer.getDuration();
+        }
+
+        else return 0;
     }
 
 
