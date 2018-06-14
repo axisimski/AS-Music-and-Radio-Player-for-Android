@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class MusicService extends Service {
 
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
 
     class serviceBinder extends Binder{
@@ -40,7 +40,6 @@ public class MusicService extends Service {
        new Thread(new Runnable() {
            @Override
            public void run() {
-               mediaPlayer=new MediaPlayer();
 
                try {
                    String songDataLocation= intent.getStringExtra("URI");
@@ -68,13 +67,5 @@ public class MusicService extends Service {
     }
 
     //------------------------------------------------------------
-    public int getMediaMax(){
-        if(mediaPlayer!=null){
-            return mediaPlayer.getDuration();
-        }
 
-        else return 0;
-    }
-
-
-}
+}//end class

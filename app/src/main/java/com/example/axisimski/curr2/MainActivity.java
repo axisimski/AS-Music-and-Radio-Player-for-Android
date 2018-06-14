@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     //temporary varriables until sharedPref is implemented
     String lastSong="";
 
+    int seek=1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
                     startService(intent);
                     bindService();
                     isPlaying=true;
+
+
+                    seek=MusicService.mediaPlayer.getDuration();
                 }
 
 
@@ -188,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("URI",list.get(i));
                 startService(intent);
                 bindService();
-
-                seekBar.setMax(MusicService.getMediaMax());
 
 
 
