@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
         getMusic();
-        adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
+        adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
 
     }//==================================================================================================end populateList();
