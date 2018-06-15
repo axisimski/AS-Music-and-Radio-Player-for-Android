@@ -31,9 +31,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     //temporary varriables until sharedPref is implemented
 
+    TextView songName_tv;
+
 
 
 
@@ -70,15 +74,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Handler handler=new Handler();
-
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
         listView2=findViewById(R.id.listView);
-        //------------------------------------------------------------------------------------------end var Declaration
+        songName_tv=findViewById(R.id.songName_tv);
+
+         //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
@@ -147,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Start new service and pass song location trough intent
     public void playMusic(String link){
+
+        songName_tv.setText(titlelist.get(list.indexOf(link)));
 
         intent.putExtra("URI",link);
         startService(intent);

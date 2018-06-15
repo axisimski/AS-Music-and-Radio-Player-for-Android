@@ -30,7 +30,15 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
-        android:text="Play" />
+        android:text="@string/play" />
+
+    <TextView
+        android:id="@+id/songName_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-97dp" />
 
 
 </RelativeLayout>
