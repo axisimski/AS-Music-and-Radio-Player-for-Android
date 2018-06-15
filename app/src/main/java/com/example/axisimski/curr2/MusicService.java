@@ -45,10 +45,6 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startID){
 
-        //Run mediaPlayer in new thread
-        new Thread(new Runnable() {
-          @Override
-           public void run() {
 
                try {
                    String songDataLocation= intent.getStringExtra("URI");
@@ -78,8 +74,6 @@ public class MusicService extends Service {
                }
 
 
-           }
-       }).start();//start thread
 
         return super.onStartCommand(intent,flags,startID);
     }//---------------------------------------------------------------------------------------------

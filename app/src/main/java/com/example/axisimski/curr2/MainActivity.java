@@ -23,6 +23,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.MutableInt;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,16 +50,12 @@ public class MainActivity extends AppCompatActivity {
     ListAdapter adapter;
     Button play_button; //Play/Pause
     SeekBar seekBar; //Seekbar (hopefully it will end up working).
-    boolean isPlaying=false; //is the song currently playing (for pause, changeing songs etc)
     String lastSong=""; //string location of last song been played.
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
     private ServiceConnection serviceConnection;
     private Intent intent;
-
-
-
 
     ListView listView2; //This populates the adapter on Search //see menu function
 
@@ -78,12 +75,11 @@ public class MainActivity extends AppCompatActivity {
         play_button=findViewById(R.id.play_button);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
-        listView2=findViewById(R.id.listView); //hook up both here?
+        listView2=findViewById(R.id.listView);
         //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
-
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MPR);
         }
@@ -96,20 +92,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(isPlaying) {
-                   // unbindService();
-                   // stopService(intent);
-
+                if(MusicService.mediaPlayer.isPlaying()) {
                     MusicService.mediaPlayer.pause();
-                    isPlaying=false;
                 }
-
                 else {
-                   // playMusic(lastSong);
-                  //  setSeekBar();
-
                     MusicService.mediaPlayer.start();
-                    isPlaying=true;
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -118,18 +105,8 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
                 if(fromUser){
-                    unbindService();
-                    stopService(intent);
-
-                    intent.putExtra("URI",lastSong);
-                    intent.putExtra("SEEK", progress);
-                    startService(intent);
-                    bindService();
-                    isPlaying=true;
-
-                    Toast.makeText(MainActivity.this,"OKSOFAR", Toast.LENGTH_SHORT).show();
+                    MusicService.mediaPlayer.seekTo(progress);
                 }
             }
             @Override
@@ -148,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+
                 playMusic(list.get(i));
                 setSeekBar();
             }
@@ -168,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("URI",link);
         startService(intent);
         bindService();
-        isPlaying=true;
 
 
 
@@ -306,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("URI",templist2.get(i));
                         startService(intent);
                         bindService();
-                        isPlaying=true;
 
                         //Delay execution so service could properly start up!
                         final Handler handler = new Handler();
