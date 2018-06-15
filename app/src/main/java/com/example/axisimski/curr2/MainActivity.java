@@ -63,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
     ListView listView2; //This populates the adapter on Search //see menu function
 
     //temporary varriables until sharedPref is implemented
-    int seek=1;
-    Runnable runnable;
-    Handler handlerSB;
+    int seek=0;
+
 
 
     //==============================================================================================Begin onCreate()
@@ -98,14 +97,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(isPlaying) {
-                    unbindService();
-                    stopService(intent);
+                   // unbindService();
+                   // stopService(intent);
+
+                    MusicService.mediaPlayer.pause();
                     isPlaying=false;
                 }
 
                 else {
-                    playMusic(lastSong);
-                    setSeekBar();
+                   // playMusic(lastSong);
+                  //  setSeekBar();
+
+                    MusicService.mediaPlayer.start();
                     isPlaying=true;
                 }
             }
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-        }, 20);
+        }, 250);
 
     }//=============================================================================================end setSeekBar()
 

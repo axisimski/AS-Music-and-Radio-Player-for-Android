@@ -39,63 +39,50 @@ public class MusicService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-
     }
 
     //====================================================================================================
     @Override
     public int onStartCommand(final Intent intent, int flags, int startID){
 
+        //Run mediaPlayer in new thread
         new Thread(new Runnable() {
           @Override
            public void run() {
-            int bar=0;
 
                try {
-
-                   bar=intent.getIntExtra("SEEK",0);
                    String songDataLocation= intent.getStringExtra("URI");
                    Uri uri=Uri.parse(songDataLocation);
+
                    mediaPlayer.reset();
                    mediaPlayer.setDataSource(getApplicationContext(), uri);
                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                   mediaPlayer.prepare();
+
+                   mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                       @Override
+                       public void onPrepared(MediaPlayer mp) {
+                           seekMax=mediaPlayer.getDuration();
+
+                           if(intent.getIntExtra("SEEK",0)>1) {
+                               mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
+                           }
+
+                           mediaPlayer.start();
+                       }
+                   });
 
 
-
-
-                   if (mediaPlayer != null) {
-                       mediaPlayer.prepare();
-                   }
                } catch (IOException e) {
                    e.printStackTrace();
                }
-             //  mediaPlayer.start();
-
-
-
-
-               //Stuff bellow probably needs to be changed
-               if(bar!=0) {
-                  mediaPlayer.seekTo(bar);
-               }
-
-              mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                  @Override
-                  public void onPrepared(MediaPlayer mp) {
-                      seekMax=mediaPlayer.getDuration();
-                      mediaPlayer.start();
-                  }
-              });
 
 
            }
-       }).start();
-
-
-
+       }).start();//start thread
 
         return super.onStartCommand(intent,flags,startID);
-    }
+    }//---------------------------------------------------------------------------------------------
 
     @Override
     public void onDestroy(){
@@ -122,12 +109,6 @@ public class MusicService extends Service {
         }
 
         return 0;
-    }
-
-
-    public void onPause()
-    {
-        mediaPlayer.pause();
     }
 
 
