@@ -20,8 +20,6 @@ public class MusicService extends Service {
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
 
-    int seekMax=100;
-
     class serviceBinder extends Binder{
         public MusicService getService(){
             return MusicService.this;
@@ -46,32 +44,31 @@ public class MusicService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startID){
 
 
-               try {
-                   String songDataLocation= intent.getStringExtra("URI");
-                   Uri uri=Uri.parse(songDataLocation);
+        try {
+            String songDataLocation= intent.getStringExtra("URI");
+            Uri uri=Uri.parse(songDataLocation);
 
-                   mediaPlayer.reset();
-                   mediaPlayer.setDataSource(getApplicationContext(), uri);
-                   mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                   mediaPlayer.prepare();
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(getApplicationContext(), uri);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.prepare();
 
-                   mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                       @Override
-                       public void onPrepared(MediaPlayer mp) {
-                           seekMax=mediaPlayer.getDuration();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
 
-                           if(intent.getIntExtra("SEEK",0)>1) {
-                               mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
-                           }
+                    if(intent.getIntExtra("SEEK",0)>1) {
+                        mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
+                    }
 
-                           mediaPlayer.start();
-                       }
-                   });
+                        mediaPlayer.start();
+                }
+            });
 
 
-               } catch (IOException e) {
-                   e.printStackTrace();
-               }
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -85,25 +82,6 @@ public class MusicService extends Service {
     }
 
     //------------------------------------------------------------
-
-    public int getMaxDuration(){
-
-        if(mediaPlayer!=null){
-            return seekMax;
-        }
-
-        return 0;
-    }
-
-
-    public int getCurrentPosition(){
-
-        if(mediaPlayer!=null){
-            return mediaPlayer.getCurrentPosition();
-        }
-
-        return 0;
-    }
 
 
 

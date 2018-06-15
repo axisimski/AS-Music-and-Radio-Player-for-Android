@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     ListAdapter adapter;
     Button play_button; //Play/Pause
     SeekBar seekBar; //Seekbar (hopefully it will end up working).
-    String lastSong=""; //string location of last song been played.
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
@@ -134,45 +133,27 @@ public class MainActivity extends AppCompatActivity {
 
      }//==================================================================================================end onCreate();
 
-
+    //Start new service and pass song location trough intent
     public void playMusic(String link){
 
-        lastSong=link;
-        //stop previous service so two songs don't play at the same time
-        unbindService();
-        stopService(intent);
-
-        //Start new service and pass song location trough intent
         intent.putExtra("URI",link);
         startService(intent);
         bindService();
 
-
-
     }//=============================================================================================end playMusic
 
-
-    public void setSeekBar(){
+     public void setSeekBar(){
 
         //Delay execution so service could properly start up!
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                seek=MusicService.getMaxDuration();
-
-                seekBar.setMax(seek);
-
-
+                seekBar.setMax(MusicService.mediaPlayer.getDuration());
             }
         }, 250);
 
     }//=============================================================================================end setSeekBar()
-
-
-
-
 
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
@@ -197,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             }while(songCursor.moveToNext());
         }
     }//==================================================================================================end getMusic();
-
     //On click sends song uri to new activity and opens said activity
     public void populateList(){
 
@@ -210,33 +190,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
     }//==================================================================================================end populateList();
-
-    private void bindService(){
-        if(serviceConnection==null){
-            serviceConnection=new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
-                    MusicService=myServiceBinder.getService();
-                    bound=true;
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName componentName) {
-                    bound=false;
-                }
-            };
-        }
-           bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
-    }//==================================================================================================//end bindService();
-
-    private void unbindService(){
-        if(bound){
-            unbindService(serviceConnection);
-            bound=false;
-        }
-    }//==================================================================================================//end unbindService();
-
+    //Create drop down search menu (Clickable)
     public boolean onCreateOptionsMenu(Menu menu){
 
         MenuInflater inflater =getMenuInflater();
@@ -269,35 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-
-
-                        lastSong=templist2.get(i);
-
-                        //stop previous service so two songs don't play at the same time
-
-                        unbindService();
-                        stopService(intent);
-                        intent.removeExtra("URI");
-
-                        //Start new service and pass song location trough intent
-                        intent.putExtra("URI",templist2.get(i));
-                        startService(intent);
-                        bindService();
-
-                        //Delay execution so service could properly start up!
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                seek=MusicService.getMaxDuration();
-
-                                seekBar.setMax(seek);
-
-
-                            }
-                        }, 250);
-
+                        playMusic(templist2.get(i));
+                        setSeekBar();
                     }
                 });//---------------------------------------------------------------------------------------end LVOCL
 
@@ -314,6 +241,32 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }//==================================================================================================end SearchMenu();
+
+    private void bindService(){
+        if(serviceConnection==null){
+            serviceConnection=new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
+                    MusicService=myServiceBinder.getService();
+                    bound=true;
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                    bound=false;
+                }
+            };
+        }
+        bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
+    }//==================================================================================================//end bindService();
+    //######################################################
+    private void unbindService(){
+        if(bound){
+            unbindService(serviceConnection);
+            bound=false;
+        }
+    }//==================================================================================================//end unbindService();
 
 
 
