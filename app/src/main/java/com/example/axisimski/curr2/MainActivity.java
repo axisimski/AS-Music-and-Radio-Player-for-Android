@@ -50,23 +50,16 @@ public class MainActivity extends AppCompatActivity {
     ListView listView; //listView to display song names
     List <String> list; //list storing song location strings
     List <String> titlelist; //list storing song titles
+    ListView listView2; //This populates the adapter on Search //see menu function
     ListAdapter adapter;
     Button play_button; //Play/Pause
-    static SeekBar seekBar; //Seekbar (hopefully it will end up working).
+    static SeekBar seekBar; //Seekbar
+    TextView songName_tv;
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
     private ServiceConnection serviceConnection;
     private Intent intent;
-
-    ListView listView2; //This populates the adapter on Search //see menu function
-
-    //temporary varriables until sharedPref is implemented
-
-    TextView songName_tv;
-
-
-
 
     //==============================================================================================Begin onCreate()
     @Override
@@ -116,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 if(fromUser){
                     MusicService.mediaPlayer.seekTo(progress);
                 }
-
-
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -130,15 +121,12 @@ public class MainActivity extends AppCompatActivity {
         });//---------------------------------------------------------------------------------------end SeekBar()
 
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-
                 playMusic(list.get(i));
                 setSeekBar();
-
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
@@ -147,13 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
      }//==================================================================================================end onCreate();
 
-
-
     //Start new service and pass song location trough intent
     public void playMusic(String link){
 
         songName_tv.setText(titlelist.get(list.indexOf(link)));
-
         intent.putExtra("URI",link);
         startService(intent);
         bindService();
