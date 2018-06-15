@@ -2,4 +2,6 @@
     <string name="app_name">MP</string>
     <string name="search">Search</string>
     <string name="play">▶</string>
+    <string name="prev">&lt;&lt;</string>
+
 </resources>

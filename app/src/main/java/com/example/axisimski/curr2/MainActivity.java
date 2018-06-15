@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -125,15 +126,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(!firstPlay){
-                    if(list.indexOf(lastSong)+1<list.size()){
-                        playMusic(list.get(indexNextSong+1));
-                        setSeekBar();
-                        firstPlay=false;
-                        play_button.setText("⌷⌷");
-                        lastSong=list.get(indexNextSong+1);
-                        indexNextSong++;
 
-                    }
+                    Random random=new Random();
+                    int songIndex=random.nextInt(list.size()-1);
+
+                    playMusic(list.get(songIndex));
+                    setSeekBar();
+                    firstPlay=false;
+                    play_button.setText("⌷⌷");
+
+
                 }
             }
         });
