@@ -12,7 +12,7 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="383dp"
+        android:layout_height="378dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="#000000" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="98dp"
+        android:layout_marginBottom="105dp"
         android:background="#191919" />
 
     <Button
@@ -32,20 +32,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="31dp"
         android:background="#000000"
         android:text="@string/play"
         android:textColor="#FFFFFF"
         android:textSize="24sp" />
 
     <TextView
-        android:textColor="#FFFFFF"
         android:id="@+id/songName_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/seekBar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-97dp" />
+        android:layout_marginTop="-105dp"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/next_btn"

@@ -54,12 +54,11 @@ public class MainActivity extends AppCompatActivity {
     List <String> titlelist; //list storing song titles
     ListView listView2; //This populates the adapter on Search //see menu function
     ListAdapter adapter;
-    Button play_button, next_button; //Play/Pause
+    Button play_button, next_button, prev_button; //Play/Pause
     static SeekBar seekBar; //Seekbar
     TextView songName_tv;
     boolean firstPlay=true;
-    String lastSong="";
-    int indexNextSong=1;
+    int indexLastSong=1;
 
 
     private MusicService MusicService;
@@ -77,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
         next_button=findViewById(R.id.next_btn);
+        prev_button=findViewById(R.id.prev_button);
+
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
         listView2=findViewById(R.id.listView);
@@ -140,6 +141,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        prev_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!firstPlay){
+                    playMusic(list.get(indexLastSong));
+                    setSeekBar();
+                    firstPlay=false;
+                    play_button.setText("⌷⌷");
+
+                }
+            }
+        });
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -186,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         bindService();
         firstPlay=false;
         play_button.setText("⌷⌷");
-        lastSong=link;
+        indexLastSong=list.indexOf(link);
 
 
 
