@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MP</string>
     <string name="search">Search</string>
-    <string name="play">Play</string>
+    <string name="play">▶</string>
 </resources>

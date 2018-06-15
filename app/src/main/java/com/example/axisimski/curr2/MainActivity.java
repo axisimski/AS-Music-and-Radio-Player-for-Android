@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     Button play_button; //Play/Pause
     static SeekBar seekBar; //Seekbar
     TextView songName_tv;
+    boolean firstPlay=true;
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
@@ -91,13 +93,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(MusicService.mediaPlayer.isPlaying()) {
-                    MusicService.mediaPlayer.pause();
+                if(firstPlay){
+                    playMusic(list.get(0));
+                    setSeekBar();
+                    firstPlay=false;
+                    play_button.setText("⌷⌷");
                 }
+
                 else {
-                    MusicService.mediaPlayer.start();
-                    MusicService.seekBarUpdater();
+                    if(MusicService.mediaPlayer.isPlaying()) {
+                        MusicService.mediaPlayer.pause();
+                        play_button.setText("▶");
+
+                    }
+                    else {
+                        MusicService.mediaPlayer.start();
+                        MusicService.seekBarUpdater();
+                        play_button.setText("⌷⌷");
+                    }
                 }
+
             }
         });//---------------------------------------------------------------------------------------
 
@@ -106,8 +121,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                if(fromUser){
-                    MusicService.mediaPlayer.seekTo(progress);
+                if(!firstPlay){
+                    if(fromUser){
+                        MusicService.mediaPlayer.seekTo(progress);
+                    }
                 }
             }
             @Override
@@ -142,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("URI",link);
         startService(intent);
         bindService();
+        firstPlay=false;
+        play_button.setText("⌷⌷");
 
     }//=============================================================================================end playMusic
 
@@ -221,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                         templist.add(temp);
                     }
                 }
-                adapter=new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, templist);
+                adapter=new ArrayAdapter<>(MainActivity.this, R.layout.cust_list, templist);
                 listView2.setAdapter(adapter);
 
                 listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {

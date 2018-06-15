@@ -72,8 +72,6 @@ public class MusicService extends Service {
             e.printStackTrace();
         }
 
-
-
         return super.onStartCommand(intent,flags,startID);
     }//---------------------------------------------------------------------------------------------
 
@@ -85,8 +83,8 @@ public class MusicService extends Service {
 
     //------------------------------------------------------------
 
+    //If mediaplayer is playing seekbar will be updated every half a second.
     public void seekBarUpdater(){
-
         Handler handler=new Handler();
 
         if(mediaPlayer.isPlaying()){
@@ -97,15 +95,13 @@ public class MusicService extends Service {
                     loc=mediaPlayer.getCurrentPosition();
 
                     String temp=Integer.toString(loc);
-                  //  Toast.makeText(getApplicationContext(), "SeekBarUP"+loc, Toast.LENGTH_SHORT).show();
                     MainActivity.seekBar.setProgress(loc);
                 }
             };
             handler.postDelayed(runnable, 500);
         }
 
-
-    }
+    }//end seekBarUpdate()
 
 
 

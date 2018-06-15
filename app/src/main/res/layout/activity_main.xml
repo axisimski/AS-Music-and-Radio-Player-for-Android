@@ -32,7 +32,10 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
-        android:text="@string/play" />
+        android:background="#000000"
+        android:text="@string/play"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <TextView
         android:textColor="#FFFFFF"
