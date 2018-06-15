@@ -19,6 +19,8 @@ public class MusicService extends Service {
 
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
+    int loc=0;
+
 
     class serviceBinder extends Binder{
         public MusicService getService(){
@@ -61,7 +63,7 @@ public class MusicService extends Service {
                         mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
                     }
 
-                        mediaPlayer.start();
+                    mediaPlayer.start();
                 }
             });
 
@@ -82,6 +84,28 @@ public class MusicService extends Service {
     }
 
     //------------------------------------------------------------
+
+    public void seekBarUpdater(){
+
+        Handler handler=new Handler();
+
+        if(mediaPlayer.isPlaying()){
+            Runnable runnable=new Runnable() {
+                @Override
+                public void run() {
+                    seekBarUpdater();
+                    loc=mediaPlayer.getCurrentPosition();
+
+                    String temp=Integer.toString(loc);
+                  //  Toast.makeText(getApplicationContext(), "SeekBarUP"+loc, Toast.LENGTH_SHORT).show();
+                    MainActivity.seekBar.setProgress(loc);
+                }
+            };
+            handler.postDelayed(runnable, 500);
+        }
+
+
+    }
 
 
 

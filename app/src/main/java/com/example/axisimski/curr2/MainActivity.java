@@ -39,6 +39,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     List <String> titlelist; //list storing song titles
     ListAdapter adapter;
     Button play_button; //Play/Pause
-    SeekBar seekBar; //Seekbar (hopefully it will end up working).
+    static SeekBar seekBar; //Seekbar (hopefully it will end up working).
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView2; //This populates the adapter on Search //see menu function
 
     //temporary varriables until sharedPref is implemented
-    int seek=0;
+
 
 
 
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Handler handler=new Handler();
 
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     MusicService.mediaPlayer.start();
+                    MusicService.seekBarUpdater();
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -104,9 +108,12 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
                 if(fromUser){
                     MusicService.mediaPlayer.seekTo(progress);
                 }
+
+
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -127,11 +134,16 @@ public class MainActivity extends AppCompatActivity {
 
                 playMusic(list.get(i));
                 setSeekBar();
+
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
 
+
+
      }//==================================================================================================end onCreate();
+
+
 
     //Start new service and pass song location trough intent
     public void playMusic(String link){
@@ -150,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 seekBar.setMax(MusicService.mediaPlayer.getDuration());
+                MusicService.seekBarUpdater();
             }
         }, 250);
 
@@ -176,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
                 titlelist.add(currentTitle);
 
             }while(songCursor.moveToNext());
+
+            Collections.reverse(list);
+            Collections.reverse(titlelist);
         }
     }//==================================================================================================end getMusic();
     //On click sends song uri to new activity and opens said activity
@@ -183,9 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
-
         getMusic();
-
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
         listView.setAdapter(adapter);
 
@@ -249,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
                     MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
                     MusicService=myServiceBinder.getService();
-                    bound=true;
+                  //  bound=true;
                 }
 
                 @Override
@@ -259,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
             };
         }
         bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
+        bound=true;
     }//==================================================================================================//end bindService();
     //######################################################
     private void unbindService(){
