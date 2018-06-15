@@ -77,7 +77,7 @@ public class MusicService extends Service {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
 
-                    int songIndex=songList.indexOf(songDataLocation)+tlc;
+             /*       int songIndex=songList.indexOf(songDataLocation)+tlc;
                     tlc++;
 
                     mediaPlayer.reset();
@@ -91,7 +91,7 @@ public class MusicService extends Service {
                         mediaPlayer.prepare();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
 
                 }

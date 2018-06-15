@@ -53,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
     List <String> titlelist; //list storing song titles
     ListView listView2; //This populates the adapter on Search //see menu function
     ListAdapter adapter;
-    Button play_button; //Play/Pause
+    Button play_button, next_button; //Play/Pause
     static SeekBar seekBar; //Seekbar
     TextView songName_tv;
     boolean firstPlay=true;
+    String lastSong="";
+    int indexNextSong=1;
+
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
+        next_button=findViewById(R.id.next_btn);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
         listView2=findViewById(R.id.listView);
@@ -116,6 +120,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });//---------------------------------------------------------------------------------------
 
+        next_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!firstPlay){
+                    if(list.indexOf(lastSong)+1<list.size()){
+                        playMusic(list.get(indexNextSong+1));
+                        setSeekBar();
+                        firstPlay=false;
+                        play_button.setText("⌷⌷");
+                        lastSong=list.get(indexNextSong+1);
+                        indexNextSong++;
+
+                    }
+                }
+            }
+        });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -156,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
     public void playMusic(String link){
 
         songName_tv.setText(titlelist.get(list.indexOf(link)));
-
         //Put whole list so MusicService can play next...
         intent.putStringArrayListExtra("songList",(ArrayList<String>)list);
         intent.putExtra("URI",link);
@@ -164,12 +184,13 @@ public class MainActivity extends AppCompatActivity {
         bindService();
         firstPlay=false;
         play_button.setText("⌷⌷");
+        lastSong=link;
 
 
 
     }//=============================================================================================end playMusic
 
-     public void setSeekBar(){
+    public void setSeekBar(){
 
         //Delay execution so service could properly start up!
         final Handler handler = new Handler();
@@ -182,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
         }, 250);
 
     }//=============================================================================================end setSeekBar()
-
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
 
@@ -270,7 +290,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }//==================================================================================================end SearchMenu();
-
     private void bindService(){
         if(serviceConnection==null){
             serviceConnection=new ServiceConnection() {
@@ -290,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
         bound=true;
     }//==================================================================================================//end bindService();
-    //######################################################
     private void unbindService(){
         if(bound){
             unbindService(serviceConnection);
