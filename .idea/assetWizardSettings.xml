@@ -55,7 +55,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="61" />
+                                                <entry key="scalingPercent" value="78" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -67,7 +67,7 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="000000" />
-                                      <entry key="foregroundImage" value="C:\Users\axisimski\Desktop\musicico.png" />
+                                      <entry key="foregroundImage" value="C:\Users\axisimski\Desktop\play_ico.png" />
                                     </map>
                                   </option>
                                 </PersistentState>

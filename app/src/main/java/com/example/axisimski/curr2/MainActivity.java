@@ -156,11 +156,16 @@ public class MainActivity extends AppCompatActivity {
     public void playMusic(String link){
 
         songName_tv.setText(titlelist.get(list.indexOf(link)));
+
+        //Put whole list so MusicService can play next...
+        intent.putStringArrayListExtra("songList",(ArrayList<String>)list);
         intent.putExtra("URI",link);
         startService(intent);
         bindService();
         firstPlay=false;
         play_button.setText("⌷⌷");
+
+
 
     }//=============================================================================================end playMusic
 

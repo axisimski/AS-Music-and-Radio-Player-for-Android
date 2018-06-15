@@ -14,12 +14,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MusicService extends Service {
 
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
     int loc=0;
+    int tlc=1;
+
 
 
     class serviceBinder extends Binder{
@@ -46,8 +49,11 @@ public class MusicService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startID){
 
 
+        final ArrayList<String> songList = intent.getStringArrayListExtra("songList");
+
         try {
-            String songDataLocation= intent.getStringExtra("URI");
+            final String songDataLocation= intent.getStringExtra("URI");
+            tlc=0;
             Uri uri=Uri.parse(songDataLocation);
 
             mediaPlayer.reset();
@@ -62,15 +68,41 @@ public class MusicService extends Service {
                     if(intent.getIntExtra("SEEK",0)>1) {
                         mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
                     }
-
                     mediaPlayer.start();
                 }
             });
 
 
-            } catch (IOException e) {
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+
+                    int songIndex=songList.indexOf(songDataLocation)+tlc;
+                    tlc++;
+
+                    mediaPlayer.reset();
+                    try {
+                       mediaPlayer.setDataSource(songList.get(songIndex));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    try {
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return super.onStartCommand(intent,flags,startID);
     }//---------------------------------------------------------------------------------------------
@@ -104,5 +136,14 @@ public class MusicService extends Service {
     }//end seekBarUpdate()
 
 
+
+    public void playNext(ArrayList<String> songList){
+
+        for(int i=0;i<songList.size();i++){
+
+
+        }
+
+    }
 
 }//end class
