@@ -104,27 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 else {
-                    intent.removeExtra("URI");
-                    intent.putExtra("URI",lastSong);
-                    startService(intent);
-                    bindService();
+                    playMusic(lastSong);
+                    setSeekBar();
                     isPlaying=true;
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            seek=MusicService.getMaxDuration();
-                            String tr=Integer.toString(seek);
-                            Toast.makeText(MainActivity.this,tr, Toast.LENGTH_SHORT).show();
-                            seekBar.setMax(seek);
-
-
-                        }
-                    }, 500);
-
-                   // playCycle();
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -137,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 if(fromUser){
                     unbindService();
                     stopService(intent);
-                    intent.removeExtra("URI");
-                    intent.removeExtra("SEEK");
+
                     intent.putExtra("URI",lastSong);
                     intent.putExtra("SEEK", progress);
                     startService(intent);
@@ -156,66 +137,62 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });//---------------------------------------------------------------------------------------end SeekBar()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //#############################################################################################SEEKBAR WS ABOVE
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-
-                lastSong=list.get(i);
-
-                //stop previous service so two songs don't play at the same time
-                unbindService();
-                stopService(intent);
-                intent.removeExtra("URI");
-
-                //Start new service and pass song location trough intent
-                intent.putExtra("URI",list.get(i));
-                startService(intent);
-                bindService();
-                isPlaying=true;
-
-
-
-                //Delay execution so service could properly start up!
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        seek=MusicService.getMaxDuration();
-
-                        seekBar.setMax(seek);
-
-
-                    }
-                }, 250);
-
-
+                playMusic(list.get(i));
+                setSeekBar();
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
 
-     }
-//==================================================================================================end onCreate();
+     }//==================================================================================================end onCreate();
+
+
+    public void playMusic(String link){
+
+        lastSong=link;
+        //stop previous service so two songs don't play at the same time
+        unbindService();
+        stopService(intent);
+
+        //Start new service and pass song location trough intent
+        intent.putExtra("URI",link);
+        startService(intent);
+        bindService();
+        isPlaying=true;
+
+
+
+    }//=============================================================================================end playMusic
+
+
+    public void setSeekBar(){
+
+        //Delay execution so service could properly start up!
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                seek=MusicService.getMaxDuration();
+
+                seekBar.setMax(seek);
+
+
+            }
+        }, 20);
+
+    }//=============================================================================================end setSeekBar()
+
+
+
+
 
     //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
     public void getMusic(){
@@ -239,8 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
             }while(songCursor.moveToNext());
         }
-    }
-//==================================================================================================end getMusic();
+    }//==================================================================================================end getMusic();
 
     //On click sends song uri to new activity and opens said activity
     public void populateList(){
@@ -253,8 +229,7 @@ public class MainActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titlelist);
         listView.setAdapter(adapter);
 
-    }
-//==================================================================================================end populateList();
+    }//==================================================================================================end populateList();
 
     private void bindService(){
         if(serviceConnection==null){
@@ -273,16 +248,14 @@ public class MainActivity extends AppCompatActivity {
             };
         }
            bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-//==================================================================================================//end bindService();
+    }//==================================================================================================//end bindService();
 
     private void unbindService(){
         if(bound){
             unbindService(serviceConnection);
             bound=false;
         }
-    }
-//==================================================================================================//end unbindService();
+    }//==================================================================================================//end unbindService();
 
     public boolean onCreateOptionsMenu(Menu menu){
 
@@ -361,27 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onCreateOptionsMenu(menu);
-    }
-//==================================================================================================end SearchMenu();
-
-
-
-    public void playCycle(){
-
-        seekBar.setProgress(MusicService.getCurrentPosition());
-
-        if(isPlaying){
-            runnable=new Runnable() {
-                @Override
-                public void run() {
-                    playCycle();
-                }
-            };
-             handlerSB.postDelayed(runnable, 100);
-        }
-
-    }
-
+    }//==================================================================================================end SearchMenu();
 
 
 

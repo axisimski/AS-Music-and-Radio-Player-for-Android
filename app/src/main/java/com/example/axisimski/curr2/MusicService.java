@@ -20,7 +20,7 @@ public class MusicService extends Service {
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
 
-    int seekMax=0;
+    int seekMax=100;
 
     class serviceBinder extends Binder{
         public MusicService getService(){
@@ -39,6 +39,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+
     }
 
     //====================================================================================================
@@ -52,10 +53,10 @@ public class MusicService extends Service {
 
                try {
 
-                    bar=intent.getIntExtra("SEEK",0);//====================--
-
+                   bar=intent.getIntExtra("SEEK",0);
                    String songDataLocation= intent.getStringExtra("URI");
                    Uri uri=Uri.parse(songDataLocation);
+                   mediaPlayer.reset();
                    mediaPlayer.setDataSource(getApplicationContext(), uri);
                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -68,18 +69,23 @@ public class MusicService extends Service {
                } catch (IOException e) {
                    e.printStackTrace();
                }
-               mediaPlayer.start();
+             //  mediaPlayer.start();
 
 
 
 
                //Stuff bellow probably needs to be changed
                if(bar!=0) {
-                   mediaPlayer.seekTo(bar);
+                  mediaPlayer.seekTo(bar);
                }
 
-
-              seekMax=mediaPlayer.getDuration();
+              mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                  @Override
+                  public void onPrepared(MediaPlayer mp) {
+                      seekMax=mediaPlayer.getDuration();
+                      mediaPlayer.start();
+                  }
+              });
 
 
            }
@@ -93,6 +99,7 @@ public class MusicService extends Service {
 
     @Override
     public void onDestroy(){
+        super.onDestroy();
         mediaPlayer.release();
     }
 
@@ -117,6 +124,11 @@ public class MusicService extends Service {
         return 0;
     }
 
+
+    public void onPause()
+    {
+        mediaPlayer.pause();
+    }
 
 
 
