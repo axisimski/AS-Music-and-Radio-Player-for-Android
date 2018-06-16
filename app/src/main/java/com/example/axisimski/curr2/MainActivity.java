@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     boolean firstPlay=true;
     int indexLastSong=1;
 
-
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
     private ServiceConnection serviceConnection;
@@ -221,38 +220,14 @@ public class MainActivity extends AppCompatActivity {
         }, 250);
 
     }//=============================================================================================end setSeekBar()
-    //Get mp3 file names/locations  (Puts all data in a string and inserts it into list and titlelist
-    public void getMusic(){
 
-        ContentResolver contentResolver=getContentResolver();
-        Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor songCursor=  contentResolver.query(songUri, null, null, null, null);
-
-        if(songCursor!=null&&songCursor.moveToFirst()){
-
-            int songTitle=songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int songLocation=songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            do{
-                //Get the location and title of all songs from storage and put them in two different lists.
-                //list holds the path (for playback) and titlelist holds the title (to be displayed).
-                //Indexes on both lists are the same.
-                String currentTitle=songCursor.getString(songTitle);
-                String currentLocation=songCursor.getString(songLocation);
-                list.add(currentLocation);
-                titlelist.add(currentTitle);
-
-            }while(songCursor.moveToNext());
-
-            Collections.reverse(list);
-            Collections.reverse(titlelist);
-        }
-    }//==================================================================================================end getMusic();
     //On click sends song uri to new activity and opens said activity
     public void populateList(){
 
+        getMusicClass getInfo = new getMusicClass();
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
-        getMusic();
+        getInfo.getMusic(list, titlelist, getApplicationContext());
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
 
