@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         inflater.inflate(R.menu.menu, menu);
         MenuItem searchItem=menu.findItem(R.id.item_search);
-        SearchView searchView= (SearchView) searchItem.getActionView();
+        final SearchView searchView= (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -292,6 +292,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
                         playMusic(templist2.get(i));
                         setSeekBar();
+                        searchView.clearFocus();
+                        searchView.onActionViewCollapsed();
                     }
                 });//---------------------------------------------------------------------------------------end LVOCL
 

@@ -12,14 +12,14 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="367dp"
+        android:layout_height="402dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="#000000" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="237dp"
+        android:layout_height="201dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/bcg">
