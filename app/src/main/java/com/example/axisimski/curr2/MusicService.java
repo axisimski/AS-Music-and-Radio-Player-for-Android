@@ -21,7 +21,7 @@ public class MusicService extends Service {
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
     int loc=0;
-    int tlc=1;
+    int tlc=1; //Varriable for next song.
 
 
 
@@ -77,21 +77,23 @@ public class MusicService extends Service {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
 
-             /*       int songIndex=songList.indexOf(songDataLocation)+tlc;
+                    int songIndex=songList.indexOf(songDataLocation)+tlc;
                     tlc++;
 
                     mediaPlayer.reset();
                     try {
-                       mediaPlayer.setDataSource(songList.get(songIndex));
+                      mediaPlayer.setDataSource(songList.get(songIndex));
+                      MainActivity.songName_tv.setText(songList.get(songIndex));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     try {
                         mediaPlayer.prepare();
+                        seekBarUpdater();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
 
 
                 }

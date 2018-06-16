@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     ListAdapter adapter;
     Button play_button, next_button, prev_button; //Play/Pause
     static SeekBar seekBar; //Seekbar
-    TextView songName_tv;
+    static TextView songName_tv;
     boolean firstPlay=true;
     int indexLastSong=1;
 
@@ -188,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
 
 
      }//==================================================================================================end onCreate();
-
     //Start new service and pass song location trough intent
     public void playMusic(String link){
 
@@ -205,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }//=============================================================================================end playMusic
-
     public void setSeekBar(){
 
         //Delay execution so service could properly start up!

@@ -5,73 +5,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bck"
+    android:background="#000000"
     tools:context=".MainActivity">
 
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="419dp"
+        android:layout_height="367dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="#000000" />
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:background="@drawable/bcg"
+        android:layout_width="match_parent"
+        android:layout_height="237dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="145dp"
-        android:background="#ffffff" />
+        android:layout_alignParentStart="true">
 
-    <Button
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="31dp"
-        android:background="#000000"
-        android:text="@string/play"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#000000"
+            android:text="@string/play"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/songName_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="103dp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/prev_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/seekBar"
+            android:layout_alignTop="@+id/play_button"
+            android:background="#000000"
+            android:text="@string/prev"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/next_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/seekBar"
-        android:layout_alignTop="@+id/play_button"
-        android:background="#000000"
-        android:text=">>"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/next_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/seekBar"
+            android:layout_alignTop="@+id/play_button"
+            android:background="#000000"
+            android:text=">>"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/prev_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/seekBar"
-        android:layout_alignTop="@+id/play_button"
-        android:background="#000000"
-        android:text="@string/prev"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/songName_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#191919"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:singleLine="true"/>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/songName_tv"
+            android:layout_centerHorizontal="true"
+            android:background="#ffffff" />
+    </RelativeLayout>
 
 
 </RelativeLayout>
