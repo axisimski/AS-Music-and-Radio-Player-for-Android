@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private Button play_button; //Play/Pause Button
     private SeekBar seekBar; //Seek bar
     private TextView songName_tv;
-    boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
-    int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
+    private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
+    private int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
     private MusicService MusicService;
     private Intent intent;
     private PlayMusic play= new PlayMusic();

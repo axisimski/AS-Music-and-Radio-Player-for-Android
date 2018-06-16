@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public class MusicService extends Service {
 
-    MediaPlayer mediaPlayer=new MediaPlayer();
+    protected MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
-    int loc=0; //Variable for current location of seek bar
-    int tlc=1; //Variable for next song.
-    String currentSong="dddd";
+    protected int loc=0; //Variable for current location of seek bar
+    protected int tlc=1; //Variable for next song.
+    protected String currentSong="";
 
     class serviceBinder extends Binder{
         public MusicService getService(){
