@@ -1,49 +1,30 @@
 package com.example.axisimski.curr2;
 
 import android.Manifest;
-import android.app.Service;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Environment;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.MutableInt;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -56,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ListAdapter adapter; //Adapter for listView
     private Button play_button; //Play/Pause Button
     private SeekBar seekBar; //Seek bar
-    private TextView songName_tv;
+    private TextView songName_tv; //Display the song name while playing
     private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
     private int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
     private MusicService MusicService;
@@ -79,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
         listView2=listView;
+        list=new ArrayList<>();
+        titlelist=new ArrayList<>();
         songName_tv=findViewById(R.id.songName_tv);
 
         //------------------------------------------------------------------------------------------end var Declaration
@@ -89,7 +72,10 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
         else{
-            populateList(); //Function call to populate ListView;
+            GetMusic getMusic = new GetMusic();
+            getMusic.getMusic(list, titlelist, getApplicationContext());
+            adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
+            listView.setAdapter(adapter);
         }//-----------------------------------------------------------------------------------------end CheckPermissions
 
         play_button.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
-
     }//==================================================================================================end onCreate();
 
     //Update last song, set song name text box. (ONlY call on play Music)
@@ -196,18 +181,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end setSeekBar();
-
-    //On click sends song uri to new activity and opens said activity
-    public void populateList(){
-
-        GetMusic getMusic = new GetMusic();
-        list=new ArrayList<>();
-        titlelist=new ArrayList<>();
-        getMusic.getMusic(list, titlelist, getApplicationContext());
-        adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
-        listView.setAdapter(adapter);
-    }
-    //==============================================================================================end populateList();
 
     //Create drop down search menu (Clickable)
     public boolean onCreateOptionsMenu(Menu menu){
@@ -262,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //==============================================================================================end SearchMenu();
 
+    //get connection to music Service
     public ServiceConnection getServiceConnection() {
 
         if(serviceConnection==null){
