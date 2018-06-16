@@ -194,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         songName_tv.setText(titlelist.get(list.indexOf(link)));
         //Put whole list so MusicService can play next...
         intent.putStringArrayListExtra("songList",(ArrayList<String>)list);
+        intent.putStringArrayListExtra("songTitleList",(ArrayList<String>)titlelist);
+
         intent.putExtra("URI",link);
         startService(intent);
         bindService();

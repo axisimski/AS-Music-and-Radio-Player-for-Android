@@ -50,9 +50,11 @@ public class MusicService extends Service {
 
 
         final ArrayList<String> songList = intent.getStringArrayListExtra("songList");
+        final ArrayList<String> songTitleList = intent.getStringArrayListExtra("songTitleList");
 
         try {
             final String songDataLocation= intent.getStringExtra("URI");
+
             tlc=0;
             Uri uri=Uri.parse(songDataLocation);
 
@@ -76,25 +78,7 @@ public class MusicService extends Service {
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-
-                    int songIndex=songList.indexOf(songDataLocation)+tlc;
-                    tlc++;
-
-                    mediaPlayer.reset();
-                    try {
-                      mediaPlayer.setDataSource(songList.get(songIndex));
-                      MainActivity.songName_tv.setText(songList.get(songIndex));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    try {
-                        mediaPlayer.prepare();
-                        seekBarUpdater();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                playNext(songList, songTitleList,songDataLocation);
 
                 }
             });
@@ -139,11 +123,28 @@ public class MusicService extends Service {
 
 
 
-    public void playNext(ArrayList<String> songList){
+    public void playNext(ArrayList<String> songList, ArrayList<String>songTitleList, String songDataLocation){
 
-        for(int i=0;i<songList.size();i++){
+        tlc++;
+        int songIndex=songList.indexOf(songDataLocation)+tlc;
 
 
+        if(songIndex<songList.size()) {
+
+            mediaPlayer.reset();
+            try {
+                mediaPlayer.setDataSource(songList.get(songIndex));
+                MainActivity.songName_tv.setText(songTitleList.get(songIndex));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            try {
+                mediaPlayer.prepare();
+                seekBarUpdater();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
