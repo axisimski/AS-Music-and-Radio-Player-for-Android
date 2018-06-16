@@ -3,6 +3,6 @@
     <string name="search">Search</string>
     <string name="play">▶</string>
     <string name="next">&gt;</string>
-    <string name="shuffle">&gt;&gt;</string>
+    <string name="shuffle">🔀</string>
 
 </resources>
