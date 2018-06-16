@@ -2,6 +2,7 @@
     <string name="app_name">MP</string>
     <string name="search">Search</string>
     <string name="play">▶</string>
-    <string name="prev">&lt;&lt;</string>
+    <string name="next">&gt;</string>
+    <string name="shuffle">&gt;&gt;</string>
 
 </resources>

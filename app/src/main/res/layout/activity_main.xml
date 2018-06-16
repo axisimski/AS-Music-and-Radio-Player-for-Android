@@ -36,25 +36,25 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/prev_button"
+            android:id="@+id/next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/seekBar"
             android:layout_alignTop="@+id/play_button"
             android:background="#000000"
-            android:text="@string/prev"
+            android:text="@string/next"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/next_btn"
+            android:id="@+id/shuffle_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/seekBar"
             android:layout_alignTop="@+id/play_button"
             android:background="#000000"
-            android:text=">>"
+            android:text="@string/shuffle"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold" />
