@@ -20,31 +20,29 @@ public class MusicService extends Service {
 
     MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
-    int loc=0;
-    int tlc=1; //Varriable for next song.
-
-
+    int loc=0; //Variable for current location of seek bar
+    int tlc=1; //Variable for next song.
+    String currentSong="dddd";
 
     class serviceBinder extends Binder{
         public MusicService getService(){
             return MusicService.this;
         }
     }
-
     //====================================================================================================
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return dataBinder;
     }
-
     //====================================================================================================
+
     @Override
     public void onCreate(){
         super.onCreate();
     }
-
     //====================================================================================================
+
     @Override
     public int onStartCommand(final Intent intent, int flags, int startID){
 
@@ -62,6 +60,7 @@ public class MusicService extends Service {
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepare();
+            currentSong=songTitleList.get(songList.indexOf(songDataLocation));
 
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -78,8 +77,7 @@ public class MusicService extends Service {
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                playNext(songList, songTitleList,songDataLocation);
-
+                    playNext(songList, songTitleList,songDataLocation);
                 }
             });
 
@@ -91,28 +89,26 @@ public class MusicService extends Service {
 
 
         return super.onStartCommand(intent,flags,startID);
-    }//---------------------------------------------------------------------------------------------
+    }
+    //====================================================================================================
 
     @Override
     public void onDestroy(){
         super.onDestroy();
         mediaPlayer.release();
     }
-
-    //------------------------------------------------------------
+    //====================================================================================================
 
     public void playNext(ArrayList<String> songList, ArrayList<String>songTitleList, String songDataLocation){
 
         tlc++;
         int songIndex=songList.indexOf(songDataLocation)+tlc;
 
-
         if(songIndex<songList.size()) {
-
             mediaPlayer.reset();
             try {
                 mediaPlayer.setDataSource(songList.get(songIndex));
-                MainActivity.songName_tv.setText(songTitleList.get(songIndex));
+                currentSong=songTitleList.get(songIndex);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,5 +122,7 @@ public class MusicService extends Service {
         }
 
     }
+    //====================================================================================================
+
 
 }//end class

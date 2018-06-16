@@ -14,10 +14,10 @@ import java.util.List;
 
 public class PlayMusic {
 
+    //Start and bind music Service;
     public void playMusic(String link, List<String> titlelist, List<String> list,
                           Intent intent, Context context, ServiceConnection serviceConnection
     ){
-
          //Put whole list so MusicService can play next...
         intent.putStringArrayListExtra("songList",(ArrayList<String>)list);
         intent.putStringArrayListExtra("songTitleList",(ArrayList<String>)titlelist);
