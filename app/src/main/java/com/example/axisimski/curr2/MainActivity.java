@@ -55,15 +55,18 @@ public class MainActivity extends AppCompatActivity {
     ListView listView2; //This populates the adapter on Search //see menu function
     ListAdapter adapter;
     Button play_button, shuffle_button, next_button; //Play/Pause
-    static SeekBar seekBar; //Seekbar
+    SeekBar seekBar; //Seekbar
     static TextView songName_tv;
     boolean firstPlay=true;
     int indexLastSong=1;
 
     private MusicService MusicService;
     private boolean bound; //Is the Service currently bound
-    private ServiceConnection serviceConnection;
+  //  private ServiceConnection serviceConnection;
     private Intent intent;
+
+    PlayMusic play= new PlayMusic();
+    ServiceConnection serviceConnection=getServiceConnection();
 
     //==============================================================================================Begin onCreate()
     @Override
@@ -82,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         listView2=findViewById(R.id.listView);
         songName_tv=findViewById(R.id.songName_tv);
 
-         //------------------------------------------------------------------------------------------end var Declaration
+
+
+        //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
          Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
@@ -99,7 +104,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(firstPlay){
-                    playMusic(list.get(0));
+
+                    play.playMusic(list.get(0), titlelist, list,intent,getApplicationContext(),
+                            serviceConnection);
+
+                    updateValues(0);//=============0000000000000000000000000000000000000000000000000000000000000
+
                     setSeekBar();
                     firstPlay=false;
                     play_button.setText("⌷⌷");
@@ -113,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else {
                         MusicService.mediaPlayer.start();
-                        MusicService.seekBarUpdater();
+                        seekBarUpdater();
                         play_button.setText("⌷⌷");
                     }
                 }
@@ -125,18 +135,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!firstPlay){
-
                     Random random=new Random();
                     int songIndex=random.nextInt(list.size()-1);
 
-                    playMusic(list.get(songIndex));
+                    play.playMusic(list.get(songIndex), titlelist, list,intent,getApplicationContext(),
+                            serviceConnection);
+                    updateValues(songIndex);
                     setSeekBar();
                     firstPlay=false;
-                    play_button.setText("⌷⌷");
-
-
-                }
             }
         });
 
@@ -180,7 +186,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-                playMusic(list.get(i));
+
+                play.playMusic(list.get(i), titlelist, list,intent,getApplicationContext(), serviceConnection);
+
+                updateValues(i);
+
                 setSeekBar();
             }
         });//---------------------------------------------------------------------------------------end LVOCL
@@ -189,24 +199,15 @@ public class MainActivity extends AppCompatActivity {
 
 
      }//==================================================================================================end onCreate();
-    //Start new service and pass song location trough intent
-    public void playMusic(String link){
 
-        songName_tv.setText(titlelist.get(list.indexOf(link)));
-        //Put whole list so MusicService can play next...
-        intent.putStringArrayListExtra("songList",(ArrayList<String>)list);
-        intent.putStringArrayListExtra("songTitleList",(ArrayList<String>)titlelist);
-
-        intent.putExtra("URI",link);
-        startService(intent);
-        bindService();
-        firstPlay=false;
+    //Update last song, set song name textbox. (ONlY call on play Music)
+    public void updateValues(int i){
+        indexLastSong=list.indexOf(list.get(i));
+        songName_tv.setText(titlelist.get(i));
         play_button.setText("⌷⌷");
-        indexLastSong=list.indexOf(link);
+        firstPlay=false;
+    }
 
-
-
-    }//=============================================================================================end playMusic
     public void setSeekBar(){
 
         //Delay execution so service could properly start up!
@@ -215,23 +216,46 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 seekBar.setMax(MusicService.mediaPlayer.getDuration());
-                MusicService.seekBarUpdater();
+                seekBarUpdater();
             }
         }, 250);
 
-    }//=============================================================================================end setSeekBar()
+    }
+    //==============================================================================================end setSeekBar()
+
+    //If media player is playing seek bar will be updated every half a second.
+    public void seekBarUpdater(){
+        Handler handler=new Handler();
+
+        if(MusicService.mediaPlayer.isPlaying()){
+            Runnable runnable=new Runnable() {
+                @Override
+                public void run() {
+                    seekBarUpdater();
+                    MusicService.loc=MusicService.mediaPlayer.getCurrentPosition();
+
+                    seekBar.setProgress(MusicService.loc);
+                }
+            };
+            handler.postDelayed(runnable, 500);
+        }
+
+    }
+    //==============================================================//end seekBarUpdate()
 
     //On click sends song uri to new activity and opens said activity
     public void populateList(){
 
-        getMusicClass getInfo = new getMusicClass();
+        GetMusic getMusic = new GetMusic();
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
-        getInfo.getMusic(list, titlelist, getApplicationContext());
+        getMusic.getMusic(list, titlelist, getApplicationContext());
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
 
-    }//==================================================================================================end populateList();
+    }
+    //==============================================================================================end populateList();
+
     //Create drop down search menu (Clickable)
     public boolean onCreateOptionsMenu(Menu menu){
 
@@ -265,7 +289,12 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-                        playMusic(templist2.get(i));
+
+                        play.playMusic(templist2.get(i), titlelist, list,intent,getApplicationContext(),
+                                serviceConnection);
+                        updateValues( list.indexOf(templist2.get(i)));
+                        setSeekBar();
+
                         setSeekBar();
                         searchView.clearFocus();
                         searchView.onActionViewCollapsed();
@@ -284,32 +313,28 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onCreateOptionsMenu(menu);
-    }//==================================================================================================end SearchMenu();
-    private void bindService(){
+    }
+    //==============================================================================================end SearchMenu();
+
+    public ServiceConnection getServiceConnection() {
+
         if(serviceConnection==null){
             serviceConnection=new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
                     MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
                     MusicService=myServiceBinder.getService();
-                  //  bound=true;
+                    //  bound=true;
                 }
-
                 @Override
                 public void onServiceDisconnected(ComponentName componentName) {
                     bound=false;
                 }
             };
         }
-        bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
-        bound=true;
-    }//==================================================================================================//end bindService();
-    private void unbindService(){
-        if(bound){
-            unbindService(serviceConnection);
-            bound=false;
-        }
-    }//==================================================================================================//end unbindService();
+        return serviceConnection;
+    }
+    //==============================================================================================end ServiceConnection();
 
 
 

@@ -101,28 +101,6 @@ public class MusicService extends Service {
 
     //------------------------------------------------------------
 
-    //If mediaplayer is playing seekbar will be updated every half a second.
-    public void seekBarUpdater(){
-        Handler handler=new Handler();
-
-        if(mediaPlayer.isPlaying()){
-            Runnable runnable=new Runnable() {
-                @Override
-                public void run() {
-                    seekBarUpdater();
-                    loc=mediaPlayer.getCurrentPosition();
-
-                    String temp=Integer.toString(loc);
-                    MainActivity.seekBar.setProgress(loc);
-                }
-            };
-            handler.postDelayed(runnable, 500);
-        }
-
-    }//end seekBarUpdate()
-
-
-
     public void playNext(ArrayList<String> songList, ArrayList<String>songTitleList, String songDataLocation){
 
         tlc++;
@@ -141,7 +119,7 @@ public class MusicService extends Service {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             try {
                 mediaPlayer.prepare();
-                seekBarUpdater();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

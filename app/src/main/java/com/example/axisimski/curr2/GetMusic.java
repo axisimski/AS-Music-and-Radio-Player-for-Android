@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class getMusicClass {
+public class GetMusic{
 
     //take in two lists and populate them with song titles (titlelist) and locations (list)
     public void getMusic(List<String> list, List<String> titlelist, Context context){
