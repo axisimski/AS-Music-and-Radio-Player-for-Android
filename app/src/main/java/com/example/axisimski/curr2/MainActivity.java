@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean bound; //Is the Service currently bound
     //==============================================================================================end Declarations
     @SuppressWarnings("unchecked")
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -206,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         getMusic.getMusic(list, titlelist, getApplicationContext());
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
-
     }
     //==============================================================================================end populateList();
 
@@ -214,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
 
         MenuInflater inflater =getMenuInflater();
-
         inflater.inflate(R.menu.menu, menu);
         MenuItem searchItem=menu.findItem(R.id.item_search);
         final SearchView searchView= (SearchView) searchItem.getActionView();
@@ -229,11 +227,9 @@ public class MainActivity extends AppCompatActivity {
                 for(String temp:titlelist){
 
                     if(temp.toLowerCase().contains(newText.toLowerCase())){
-
                       String s=  list.get(titlelist.indexOf(temp));
-
-                        templist2.add(s);
-                        templist.add(temp);
+                      templist2.add(s);
+                      templist.add(temp);
                     }
                 }
                 adapter=new ArrayAdapter<>(MainActivity.this, R.layout.cust_list, templist);
@@ -248,13 +244,10 @@ public class MainActivity extends AppCompatActivity {
                                 serviceConnection);
                         updateValues( list.indexOf(templist2.get(i)));
                         setSeekBar();
-
-                        setSeekBar();
                         searchView.clearFocus();
                         searchView.onActionViewCollapsed();
                     }
                 });//---------------------------------------------------------------------------------------end LVOCL
-
 
                 return true;
             }
@@ -264,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
 
         return super.onCreateOptionsMenu(menu);
     }
