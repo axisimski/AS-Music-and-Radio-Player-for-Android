@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
     //==============================================================================================end Declarations
-
-    @Override
+    @SuppressWarnings("unchecked")
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Button next_button=findViewById(R.id.next_button);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
-        listView2=findViewById(R.id.listView);
+        listView2=listView;
         songName_tv=findViewById(R.id.songName_tv);
 
         //------------------------------------------------------------------------------------------end var Declaration
