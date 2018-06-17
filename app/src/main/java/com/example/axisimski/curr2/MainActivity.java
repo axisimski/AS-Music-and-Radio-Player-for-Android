@@ -41,16 +41,16 @@ public class MainActivity extends AppCompatActivity {
     private Button play_button; //Play/Pause Button
     private SeekBar seekBar; //Seek bar
     private TextView songName_tv; //Display the song name while playing
-    private boolean firstPlay=false; //Has a song been played yet? relevant for what the play button does.
+    private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
+    private boolean firstUse=true;
     private int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
     private MusicService MusicService;
     private Intent intent;
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
-    //private boolean firstUse=false;
-
     private boolean bound; //Is the Service currently bound
     //==============================================================================================end Declarations
+
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadSettings();//load whether the app has been used before and the last song play
-        String n=Boolean.toString(firstPlay);
-        Toast.makeText(MainActivity.this, "ff"+n, Toast.LENGTH_LONG).show();
 
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
@@ -92,11 +90,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(firstPlay){
-                    play.playMusic(list.get(0), titlelist, list,intent,getApplicationContext(),
+                    play.playMusic(list.get(indexLastSong), titlelist, list,intent,getApplicationContext(),
                             serviceConnection);
-                    updateValues(0);
+                    updateValues(indexLastSong);
                     setSeekBar();
-                    saveSettings(0);
+                    saveSettings(indexLastSong);
                 }
                 else {
                     if(MusicService.mediaPlayer.isPlaying()) {
@@ -135,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                    updateValues(indexLastSong);
                    setSeekBar();
                    MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
+                    saveSettings(indexLastSong);
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -161,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 play.playMusic(list.get(i), titlelist, list,intent,getApplicationContext(), serviceConnection);
                 updateValues(i);
                 setSeekBar();
+                saveSettings(i);
             }
         });//---------------------------------------------------------------------------------------end LVOCL
 
@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                         play.playMusic(templist2.get(i), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
                         updateValues( list.indexOf(templist2.get(i)));
+                        saveSettings(list.indexOf(templist2.get(i)));
                         setSeekBar();
                         searchView.clearFocus();
                         searchView.onActionViewCollapsed();
@@ -274,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         indexLastSong=i;
         firstPlay=false;
         editor.putInt("indexLastSong",indexLastSong);
-        editor.putBoolean("f", firstPlay);
+        editor.putBoolean("firstPlay", firstUse);
         editor.apply();
     }
 
@@ -282,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
         if(sp!=null){
             indexLastSong=sp.getInt("indexLastSong",0);
-            firstPlay=sp.getBoolean("f", true);
+            firstUse=sp.getBoolean("firstPlay", true);
         }
 
     }
