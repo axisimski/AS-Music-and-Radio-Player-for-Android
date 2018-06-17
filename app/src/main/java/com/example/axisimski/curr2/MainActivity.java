@@ -38,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private List <String> titlelist; //list storing song titles
     private ListView listView2; //This populates the adapter on Search //see menu function
     private ListAdapter adapter; //Adapter for listView
-    private Button play_button; //Play/Pause Button
+    private Button play_button, shuffle_button, next_button; //Play/Pause, Shuffle, Next buttons
     private SeekBar seekBar; //Seek bar
     private TextView songName_tv; //Display the song name while playing
     private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
     private boolean firstUse=true;
-    private int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
+    private int indexLastSong=0; //Keeps track of the last song which was played (default val=1)
     private MusicService MusicService;
     private Intent intent;
     private PlayMusic play= new PlayMusic();
@@ -51,19 +51,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean bound; //Is the Service currently bound
     //==============================================================================================end Declarations
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadSettings();//load whether the app has been used before and the last song play
-
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
-        Button shuffle_button=findViewById(R.id.shuffle_btn);
-        Button next_button=findViewById(R.id.next_button);
+        shuffle_button=findViewById(R.id.shuffle_btn);
+        next_button=findViewById(R.id.next_button);
         seekBar=findViewById(R.id.seekBar);
         listView=findViewById(R.id.listView);
         listView2=listView;
@@ -85,6 +82,18 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
         }//-----------------------------------------------------------------------------------------end CheckPermissions
 
+        loadSettings();//load whether the app has been used before and the last song play
+        //First time after installing the app files are not visible, must be restarted
+        if(firstUse){
+            Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
+        }
+        saveSettings(indexLastSong);
+        userInput();
+
+    }//==================================================================================================end onCreate();
+
+    //Keeps the onClickListeners for the UI elements
+    public void userInput(){
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,25 +123,26 @@ public class MainActivity extends AppCompatActivity {
         shuffle_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Random random=new Random();
-                    int songIndex=random.nextInt(list.size()-1);
-                    play.playMusic(list.get(songIndex), titlelist, list,intent,getApplicationContext(),
-                            serviceConnection);
-                    updateValues(songIndex);
-                    setSeekBar();
-                    firstPlay=false;
-                    saveSettings(songIndex);
+                Random random=new Random();
+                int songIndex=random.nextInt(list.size()-1);
+                play.playMusic(list.get(songIndex), titlelist, list,intent,getApplicationContext(),
+                        serviceConnection);
+                updateValues(songIndex);
+                setSeekBar();
+                firstPlay=false;
+                saveSettings(songIndex);
             }
         });
 
         next_button.setOnClickListener(new View.OnClickListener() {
+            @SuppressWarnings("unchecked")
             @Override
             public void onClick(View v) {
                 if(!firstPlay){
-                   String song=list.get(indexLastSong);
-                   updateValues(indexLastSong);
-                   setSeekBar();
-                   MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
+                    String song=list.get(indexLastSong);
+                    updateValues(indexLastSong);
+                    setSeekBar();
+                    MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
                     saveSettings(indexLastSong);
                 }
             }
@@ -163,8 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 saveSettings(i);
             }
         });//---------------------------------------------------------------------------------------end LVOCL
-
-    }//==================================================================================================end onCreate();
+    }
 
     //Update last song, set song name text box. (ONlY call on play Music)
     public void updateValues(int i){
@@ -176,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
 
     //set SeekBar by polling MediaService (Also sets title textView)
     public void setSeekBar(){
-
         //Delay execution so service could properly start up!
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -189,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                 seekBar.setProgress(MusicService.loc);
             }
         }, 500);
-
     }
     //==============================================================================================end setSeekBar();
 
@@ -273,11 +280,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sp.edit();
         indexLastSong=i;
-        firstPlay=false;
+        firstUse=false;
         editor.putInt("indexLastSong",indexLastSong);
         editor.putBoolean("firstPlay", firstUse);
         editor.apply();
     }
+    //==============================================================================================end ServiceConnection();
 
     public void loadSettings(){
         SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
@@ -285,7 +293,6 @@ public class MainActivity extends AppCompatActivity {
             indexLastSong=sp.getInt("indexLastSong",0);
             firstUse=sp.getBoolean("firstPlay", true);
         }
-
     }
-
+    //==============================================================================================end ServiceConnection();
 }//End class();
