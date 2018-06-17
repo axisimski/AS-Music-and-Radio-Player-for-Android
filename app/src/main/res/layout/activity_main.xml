@@ -79,6 +79,7 @@
             android:layout_below="@+id/songName_tv"
             android:layout_centerHorizontal="true"
             android:background="#ffffff" />
+
     </RelativeLayout>
 
 

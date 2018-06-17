@@ -2,8 +2,10 @@ package com.example.axisimski.curr2;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,12 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -38,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private Button play_button; //Play/Pause Button
     private SeekBar seekBar; //Seek bar
     private TextView songName_tv; //Display the song name while playing
-    private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
+    private boolean firstPlay=false; //Has a song been played yet? relevant for what the play button does.
     private int indexLastSong=1; //Keeps track of the last song which was played (default val=1)
     private MusicService MusicService;
     private Intent intent;
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
+    //private boolean firstUse=false;
+
     private boolean bound; //Is the Service currently bound
     //==============================================================================================end Declarations
     @SuppressWarnings("unchecked")
@@ -51,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadSettings();//load whether the app has been used before and the last song play
+        String n=Boolean.toString(firstPlay);
+        Toast.makeText(MainActivity.this, "ff"+n, Toast.LENGTH_LONG).show();
 
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
@@ -87,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             serviceConnection);
                     updateValues(0);
                     setSeekBar();
+                    saveSettings(0);
                 }
                 else {
                     if(MusicService.mediaPlayer.isPlaying()) {
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     updateValues(songIndex);
                     setSeekBar();
                     firstPlay=false;
+                    saveSettings(songIndex);
             }
         });
 
@@ -256,5 +267,24 @@ public class MainActivity extends AppCompatActivity {
     }
     //==============================================================================================end ServiceConnection();
 
+    //Settings
+    public void saveSettings(int i){
+        SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        indexLastSong=i;
+        firstPlay=false;
+        editor.putInt("indexLastSong",indexLastSong);
+        editor.putBoolean("f", firstPlay);
+        editor.apply();
+    }
+
+    public void loadSettings(){
+        SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+        if(sp!=null){
+            indexLastSong=sp.getInt("indexLastSong",0);
+            firstPlay=sp.getBoolean("f", true);
+        }
+
+    }
 
 }//End class();
