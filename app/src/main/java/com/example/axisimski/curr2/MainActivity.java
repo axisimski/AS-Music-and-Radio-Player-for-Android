@@ -56,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Temp
+        Button button=(Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Intent openRadio=new Intent(MainActivity.this, RadioActivity.class);
+            startActivity(openRadio);
+            }
+        });
+//=================================================================#######################################
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
