@@ -8,8 +8,14 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RadioActivity extends AppCompatActivity {
 
@@ -17,9 +23,12 @@ public class RadioActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection=getServiceConnection();
     private RadioService RadioService=new RadioService();
     private boolean isPlaying=false; //Is music playing? Play/Pause
-    private EditText link_edt; //Editext for user inputed links...may move latter
-    private Intent intent;
-
+    private EditText link_edt; //Edit text for user inputed links...may move latter
+    private ListView listView; //UI Radio Station list
+    private List<String> list; //list containing Radio Station URLs
+    private List <String> titlelist; //list containing Radio Station Titles
+    private ListAdapter adapter; //ListView adapter
+    private Intent intent; //Intent
     private int numStations=0;
     private boolean bound=false;
 
@@ -33,7 +42,16 @@ public class RadioActivity extends AppCompatActivity {
         play_button=findViewById(R.id.button_play);
         add_button=findViewById(R.id.button_add);
         link_edt=findViewById(R.id.link_edt);
+        listView=findViewById(R.id.listView);
+        list=new ArrayList<>();
+        titlelist=new ArrayList<>();
         intent=new Intent(RadioActivity.this, RadioService.class);
+
+        titlelist.add("Radio Ultra");
+
+
+        adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
+        listView.setAdapter(adapter);
 
         //User Input
         userInput();
@@ -46,6 +64,7 @@ public class RadioActivity extends AppCompatActivity {
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(!isPlaying){
                     playRadio("http://88.80.96.25:8020", intent);
                     isPlaying=true;
