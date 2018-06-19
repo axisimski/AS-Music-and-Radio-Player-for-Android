@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
+
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                         serviceConnection);
                 updateValues(songIndex);
                 setSeekBar();
-                firstPlay=false;
                 saveSettings(songIndex);
             }
         });
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     updateValues(indexLastSong);
                     setSeekBar();
                     MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
-                    saveSettings(indexLastSong);
+                    saveSettings(indexLastSong);  //######################################################################
                 }
             }
         });//---------------------------------------------------------------------------------------
