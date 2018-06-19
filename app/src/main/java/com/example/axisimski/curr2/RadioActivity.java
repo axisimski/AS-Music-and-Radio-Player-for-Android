@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,26 +24,24 @@ public class RadioActivity extends AppCompatActivity {
     private boolean bound=false;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_radio);
 
-        //Initilize Varriables
+        //Initialize Variables
         play_button=findViewById(R.id.button_play);
         add_button=findViewById(R.id.button_add);
         link_edt=findViewById(R.id.link_edt);
         intent=new Intent(RadioActivity.this, RadioService.class);
 
-        //Execute
-        doStuff();
+        //User Input
+        userInput();
     }
+    //==============================================================================================end onCreate()
 
-
-    //Set onClick Listeners
-    public void doStuff(){
+    //Keeps the onClickListeners for the UI elements
+    public void userInput(){
 
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,12 +64,8 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
-
     }
-
-
-
-
+    //==============================================================================================end userInput()
 
     //Start Radio Service
     public void playRadio(String link, Intent intent){
@@ -80,6 +73,7 @@ public class RadioActivity extends AppCompatActivity {
         startService(intent);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
+    //==============================================================================================end playRadio()
 
 
 
@@ -104,35 +98,9 @@ public class RadioActivity extends AppCompatActivity {
             };
 
         }
-
-
         return serviceConnection;
-    }
+    }//=============================================================================================end getServiceConnection
 
 
-    public void saveStation(String url, int i){
 
-        SharedPreferences spStations=getApplicationContext().getSharedPreferences("Stations", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor =spStations.edit();
-
-        String Station="Station";
-        String key=Station+Integer.toString(i);
-        editor.putInt("numStations", i);
-        editor.putString(key, url);
-        editor.apply();
-
-    }
-
-    public String loadStations(int i){
-
-        SharedPreferences spStations=getApplicationContext().getSharedPreferences("Stations", Context.MODE_PRIVATE);
-
-        String Station="Station";
-
-        String URL=Station+Integer.toString(i);
-
-        return  "Hello";
-
-
-    }
-}
+}//end class()

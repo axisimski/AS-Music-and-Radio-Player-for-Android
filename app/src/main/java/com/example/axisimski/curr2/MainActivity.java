@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent openRadio=new Intent(MainActivity.this, RadioActivity.class);
-            startActivity(openRadio);
+                Intent openRadio=new Intent(MainActivity.this, RadioActivity.class);
+                startActivity(openRadio);
             }
         });
 //=================================================================#######################################
@@ -100,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
         saveSettings(indexLastSong);
         userInput();
 
-    }//==================================================================================================end onCreate();
+    }
+    //==================================================================================================end onCreate();
 
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
