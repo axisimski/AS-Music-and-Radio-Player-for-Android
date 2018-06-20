@@ -80,6 +80,8 @@ public class RadioActivity extends AppCompatActivity {
              station_tv.setText(currentlyPlaying);
              play_button.setText("⌷⌷");
          }
+
+         MusicService.pause();
          userInput();
     }
     //==============================================================================================end onCreate()
@@ -297,12 +299,12 @@ public class RadioActivity extends AppCompatActivity {
     //==============================================================================================end SearchMenu();
 
     //Send info to music player
-   /* @Override
+    @Override
     public void onBackPressed(){
         Intent n=new Intent(RadioActivity.this, MainActivity.class);
         n.putExtra("StationName", titlelist.get(indexLastStation));
         n.putExtra("isPlaying", MusicService.isPlaying());
         startActivity(n);
-    }*/
+    }
 
 }//end class()

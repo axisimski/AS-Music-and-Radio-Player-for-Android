@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean firstPlay=true; //Has a song been played yet? relevant for what the play button does.
     private boolean firstUse=true;
     private int indexLastSong=0; //Keeps track of the last song which was played (default val=1)
-    private MusicService MusicService;
+    private MusicService MusicService=new MusicService();
     private Intent intent;
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
@@ -89,12 +89,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
         }
 
+        MusicService.pause();
+
         Intent i=getIntent();
-        String currentlyPlaying=i.getStringExtra("currentlyPlaying");
+        String currentlyPlaying=i.getStringExtra("StationName");
         isPlaying=i.getBooleanExtra("isPlaying", false);
-        if(i.getBooleanExtra("isPlaying",false)) {
+
+        if(isPlaying) {
             songName_tv.setText(currentlyPlaying);
-             play_button.setText("⌷⌷");
+            play_button.setText("⌷⌷");
         }
 
         saveSettings(indexLastSong);
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-               if(firstPlay){
+                if(firstPlay){
                     play.playMusic(list.get(indexLastSong), titlelist, list,intent,getApplicationContext(),
                             serviceConnection);
                     updateValues(indexLastSong);
