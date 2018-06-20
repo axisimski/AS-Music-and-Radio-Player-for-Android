@@ -56,16 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Temp
-        Button button=findViewById(R.id.openRadio_btn);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent openRadio=new Intent(MainActivity.this, RadioActivity.class);
-               // openRadio.putExtra("isPlaying", MusicService.mediaPlayer.isPlaying());
-                startActivity(openRadio);
-            }
-        });
 //=================================================================#######################################
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
@@ -212,14 +202,15 @@ public class MainActivity extends AppCompatActivity {
     }
     //==============================================================================================end setSeekBar();
 
-    //Create drop down search menu (Clickable)
+    //Populate Action Bar
     public boolean onCreateOptionsMenu(Menu menu){
 
         MenuInflater inflater =getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+
+        //Create drop down search menu (Clickable)
         MenuItem searchItem=menu.findItem(R.id.item_search);
         final SearchView searchView= (SearchView) searchItem.getActionView();
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             public boolean onQueryTextChange(String newText) {
@@ -262,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Button for Radio Activity
         MenuItem radioItem= menu.findItem(R.id.item_radio);
         radioItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
