@@ -71,13 +71,17 @@ public class RadioActivity extends AppCompatActivity {
 
         //Load list of radio stations from shared prefs and enable UI
          loadList();
-         Intent i=getIntent();
-         Boolean isPlaying=i.getBooleanExtra("isPlaying",false);
-         String currentlyPlaying=i.getStringExtra("currentlyPlaying");
 
+         //Info passed on from MainActivity()
+         //Determines what goes in the text box etc..
+         Intent i=getIntent();
+         isPlaying=i.getBooleanExtra("isPlaying",false);
+         String currentlyPlaying=i.getStringExtra("currentlyPlaying");
          if(isPlaying) {
              station_tv.setText(currentlyPlaying);
+             play_button.setText("⌷⌷");
          }
+
          userInput();
     }
     //==============================================================================================end onCreate()
@@ -92,13 +96,19 @@ public class RadioActivity extends AppCompatActivity {
 
                 if(list.get(0)!=null) {
 
+                    String x=Boolean.toString(isPlaying);
+                    Toast.makeText(getApplicationContext(), x+"FFF", Toast.LENGTH_SHORT).show();
+                  //  MusicService.mediaPlayer.stop();
+
                     if (!isPlaying) {
                         play.playMusic(list.get(indexLastStation), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
                         updateValues(indexLastStation);
                         isPlaying = true;
-                    } else {
-                        MusicService.mediaPlayer.stop();
+                    }
+                    else {
+
+                        MusicService.pause();
                         isPlaying = false;
                         play_button.setText("▶");
                     }

@@ -109,12 +109,12 @@ public class MainActivity extends AppCompatActivity {
                     saveSettings(indexLastSong);
                  }
                 else {
-                    if(MusicService.mediaPlayer.isPlaying()) {
-                        MusicService.mediaPlayer.pause();
+                    if(MusicService.isPlaying()) {
+                        MusicService.pause();
                         play_button.setText("▶");
                      }
                     else {
-                        MusicService.mediaPlayer.start();
+                        MusicService.start();
                         setSeekBar();
                         play_button.setText("⌷⌷");
                      }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(!firstPlay){
                     if(fromUser){
-                        MusicService.mediaPlayer.seekTo(progress);
+                        MusicService.seekTo(progress);
                     }
                 }
             }
@@ -193,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 songName_tv.setText(MusicService.currentSong);
-                seekBar.setMax(MusicService.mediaPlayer.getDuration());
+                seekBar.setMax(MusicService.getDuration());
                 setSeekBar();
-                MusicService.loc=MusicService.mediaPlayer.getCurrentPosition();
+                MusicService.loc=MusicService.getCurrentPosition();
                 seekBar.setProgress(MusicService.loc);
             }
         }, 500);

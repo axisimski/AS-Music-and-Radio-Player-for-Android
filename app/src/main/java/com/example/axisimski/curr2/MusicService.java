@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class MusicService extends Service {
 
-    protected MediaPlayer mediaPlayer=new MediaPlayer();
+    protected static MediaPlayer mediaPlayer=new MediaPlayer();
     private IBinder dataBinder=new serviceBinder();
     protected int loc=0; //Variable for current location of seek bar
     protected int tlc=1; //Variable for next song.
@@ -98,7 +98,6 @@ public class MusicService extends Service {
         mediaPlayer.release();
     }
     //====================================================================================================
-
     public void playNext(ArrayList<String> songList, ArrayList<String>songTitleList, String songDataLocation){
 
         tlc++;
@@ -121,6 +120,31 @@ public class MusicService extends Service {
             }
         }
 
+    }
+    //====================================================================================================
+
+    public void pause(){
+        mediaPlayer.pause();
+    }
+
+    public void seekTo(int progress){
+        mediaPlayer.seekTo(progress);
+    }
+
+    public int getDuration(){
+        return mediaPlayer.getDuration();
+    }
+    public void start(){
+        mediaPlayer.start();
+    }
+
+    public boolean isPlaying(){
+
+        return mediaPlayer.isPlaying();
+    }
+
+    public int getCurrentPosition(){
+        return mediaPlayer.getCurrentPosition();
     }
     //====================================================================================================
 
