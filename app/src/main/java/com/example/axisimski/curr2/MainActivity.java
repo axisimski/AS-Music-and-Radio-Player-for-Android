@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
-    //==============================================================================================end Declarations
+     //==============================================================================================end Declarations
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,17 +107,17 @@ public class MainActivity extends AppCompatActivity {
                     updateValues(indexLastSong);
                     setSeekBar();
                     saveSettings(indexLastSong);
-                }
+                 }
                 else {
                     if(MusicService.mediaPlayer.isPlaying()) {
                         MusicService.mediaPlayer.pause();
                         play_button.setText("▶");
-                    }
+                     }
                     else {
                         MusicService.mediaPlayer.start();
                         setSeekBar();
                         play_button.setText("⌷⌷");
-                    }
+                     }
                 }
 
             }
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     updateValues(indexLastSong);
                     setSeekBar();
                     MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
-                    saveSettings(indexLastSong);  //######################################################################
+                    saveSettings(indexLastSong);
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -252,13 +252,15 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        //------------------------------------------------------------------------------------------
         //Button for Radio Activity
         MenuItem radioItem= menu.findItem(R.id.item_radio);
         radioItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent radioIntent=new Intent(MainActivity.this, RadioActivity.class);
+                radioIntent.putExtra("currentlyPlaying",titlelist.get(indexLastSong));
+                radioIntent.putExtra("isPlaying", play_button.getText().equals("⌷⌷"));
                 startActivity(radioIntent);
                 return false;
             }

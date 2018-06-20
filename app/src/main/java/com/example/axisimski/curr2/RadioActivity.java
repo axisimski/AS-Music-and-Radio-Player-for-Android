@@ -59,7 +59,6 @@ public class RadioActivity extends AppCompatActivity {
 
         //Initialize Variables
         play_button=findViewById(R.id.button_play);
-        add_button=findViewById(R.id.button_add);
         listView=findViewById(R.id.listView);
         station_tv=findViewById(R.id.stationName_tv);
         list=new ArrayList<>();
@@ -72,6 +71,13 @@ public class RadioActivity extends AppCompatActivity {
 
         //Load list of radio stations from shared prefs and enable UI
          loadList();
+         Intent i=getIntent();
+         Boolean isPlaying=i.getBooleanExtra("isPlaying",false);
+         String currentlyPlaying=i.getStringExtra("currentlyPlaying");
+
+         if(isPlaying) {
+             station_tv.setText(currentlyPlaying);
+         }
          userInput();
     }
     //==============================================================================================end onCreate()
@@ -100,17 +106,6 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
-        //Add new Station to the list, refresh the view and save the list in SPFs
-        add_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-          //      addStation();
-              ////  ((BaseAdapter)adapter).notifyDataSetChanged();
-              //  saveList();
-
-            }
-        });
 
         //On item click play.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -175,7 +170,7 @@ public class RadioActivity extends AppCompatActivity {
         String jsonName=sharedPreferences.getString("jsonName", "");
         indexLastStation=sharedPreferences.getInt("indexLastSong",0);
 
-        if(jsonURL!="") {
+        if(!jsonURL.equals("")) {
 
             List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
             }.getType());
@@ -269,8 +264,10 @@ public class RadioActivity extends AppCompatActivity {
     //Update last song, set song name text box. (ONlY call on play Music)
     public void updateValues(int i){
         indexLastStation=list.indexOf(list.get(i));
-         play_button.setText("⌷⌷");
-     }//=============================================================================================end updateValues();
+        play_button.setText("⌷⌷");
+        station_tv.setText(titlelist.get(i));
+
+    }//=============================================================================================end updateValues();
 
     //Populate Action Bar
     public boolean onCreateOptionsMenu(Menu menu){
