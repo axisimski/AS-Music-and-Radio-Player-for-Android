@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,14 +85,18 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!isPlaying){
+                /*if(!isPlaying){
                     playRadio("http://88.80.96.25:8020", intent);
                     isPlaying=true;
                 }
                 else {
                     RadioService.mediaPlayer.stop();
                     isPlaying=false;
-                }
+                }*/
+
+                loadList();
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+
             }
         });
 
@@ -101,12 +106,13 @@ public class RadioActivity extends AppCompatActivity {
                // playRadio(link_edt.getText().toString(), intent);
                 addStation();
                 ((BaseAdapter)adapter).notifyDataSetChanged();
+                saveList();
             }
         });
 
     }
     //==============================================================================================end userInput()
-    public void save(){
+    public void saveList(){
         SharedPreferences sharedPreferences=getApplicationContext().
                 getSharedPreferences("LIST", Context.MODE_PRIVATE);
 
@@ -116,10 +122,24 @@ public class RadioActivity extends AppCompatActivity {
         String jsonURL =gson.toJson(list);
         String jsonName=gson.toJson(titlelist);
 
-        editor.putString("JURL", jsonURL);
-        editor.putString("JName", jsonName);
+        editor.putString("jsonURL", jsonURL);
+        editor.putString("jsonName", jsonName);
+
+        editor.apply();
     }
 
+
+    public void loadList(){
+        SharedPreferences sharedPreferences=getApplicationContext().
+                getSharedPreferences("LIST", Context.MODE_PRIVATE);
+        Gson gson=new Gson();
+
+        String jsonURL=sharedPreferences.getString("jsonURL","");
+        String jsonName=sharedPreferences.getString("jsonName", "");
+
+        titlelist=gson.fromJson(jsonURL,new TypeToken<List<String>>(){}.getType());
+
+    }
 
     //Start Radio Service
     public void playRadio(String link, Intent intent){
@@ -128,8 +148,6 @@ public class RadioActivity extends AppCompatActivity {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
     //==============================================================================================end playRadio()
-
-
 
     //Establish Service Connection
     public ServiceConnection getServiceConnection() {
