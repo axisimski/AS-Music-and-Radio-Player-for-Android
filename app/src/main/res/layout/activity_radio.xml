@@ -8,12 +8,14 @@
     android:background="#CACACA"
     tools:context=".RadioActivity">
 
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="319dp"
+        android:layout_height="402dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:background="#CACACA" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,25 +25,73 @@
         android:background="@drawable/bcg">
 
         <Button
-            android:id="@+id/button_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:text="@string/add" />
-
-        <Button
             android:id="@+id/button_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="57dp"
+            android:layout_centerInParent="true"
+            android:background="#000000"
             android:text="@string/play"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="148dp"
-            tools:layout_editor_absoluteY="390dp" />
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:layout_alignStart="@+id/seekBar"
+            android:layout_centerVertical="true"
+            android:background="#000000"
+            android:text="@string/next"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:layout_alignEnd="@+id/seekBar"
+            android:layout_centerVertical="true"
+            android:background="#000000"
+            android:text="@string/add"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/songName_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#191919"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/songName_tv"
+            android:layout_centerHorizontal="true"
+            android:background="#ffffff" />
+
+        <Button
+            android:id="@+id/openRadio_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="#000000"
+            android:text="@string/radio"
+            android:textColor="#FFFFFF" />
+
     </RelativeLayout>
+
+
+
 </RelativeLayout>
