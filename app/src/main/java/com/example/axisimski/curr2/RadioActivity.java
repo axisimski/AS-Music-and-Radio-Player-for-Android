@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,6 +113,9 @@ public class RadioActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end userInput()
+
+
+    //Load and save lists in Shared Preferences
     public void saveList(){
         SharedPreferences sharedPreferences=getApplicationContext().
                 getSharedPreferences("LIST", Context.MODE_PRIVATE);
@@ -128,7 +132,7 @@ public class RadioActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
+    @SuppressWarnings("unchecked")
     public void loadList(){
         SharedPreferences sharedPreferences=getApplicationContext().
                 getSharedPreferences("LIST", Context.MODE_PRIVATE);
@@ -137,9 +141,16 @@ public class RadioActivity extends AppCompatActivity {
         String jsonURL=sharedPreferences.getString("jsonURL","");
         String jsonName=sharedPreferences.getString("jsonName", "");
 
-        titlelist=gson.fromJson(jsonURL,new TypeToken<List<String>>(){}.getType());
+        List tempName=gson.fromJson(jsonName, new TypeToken<List<String>>(){}.getType());
+        titlelist.clear();
+        titlelist.addAll((List)tempName);
+        ((BaseAdapter)adapter).notifyDataSetChanged();
 
+        List tempURL=gson.fromJson(jsonName, new TypeToken<List<String>>(){}.getType());
+        list.clear();
+        list.addAll((List)tempURL);
     }
+    //==============================================================================================end userInput()
 
     //Start Radio Service
     public void playRadio(String link, Intent intent){
