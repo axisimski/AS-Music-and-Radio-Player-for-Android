@@ -57,11 +57,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Temp
-        Button button=(Button)findViewById(R.id.button);
+        Button button=findViewById(R.id.openRadio_btn);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent openRadio=new Intent(MainActivity.this, RadioActivity.class);
+               // openRadio.putExtra("isPlaying", MusicService.mediaPlayer.isPlaying());
                 startActivity(openRadio);
             }
         });

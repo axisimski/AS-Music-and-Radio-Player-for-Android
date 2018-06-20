@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +34,7 @@ public class RadioActivity extends AppCompatActivity {
 
     private Button play_button, add_button;  //Buttons for playing/pause, adding a radio station
     private ServiceConnection serviceConnection=getServiceConnection();
-    private RadioService RadioService=new RadioService();
+    private MusicService MusicService=new MusicService();
     private boolean isPlaying=false; //Is music playing? Play/Pause
     private EditText link_edt; //Edit text for user inputed links...may move latter
     private ListView listView; //UI Radio Station list
@@ -40,8 +42,9 @@ public class RadioActivity extends AppCompatActivity {
     private List <String> titlelist; //list containing Radio Station Titles
     private ListAdapter adapter; //ListView adapter
     private Intent intent; //Intent
-    private int numStations=0;
+    private PlayMusic play= new PlayMusic(); //Player
     private boolean bound=false;
+    private int indexLastStation=0;
 
 
     @Override
@@ -55,7 +58,7 @@ public class RadioActivity extends AppCompatActivity {
         listView=findViewById(R.id.listView);
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
-        intent=new Intent(RadioActivity.this, RadioService.class);
+        intent=new Intent(RadioActivity.this, MusicService.class);
 
         //loadList();
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
@@ -81,20 +84,19 @@ public class RadioActivity extends AppCompatActivity {
                         playRadio(list.get(0), intent);
                         isPlaying = true;
                     } else {
-                        RadioService.mediaPlayer.stop();
+                        MusicService.mediaPlayer.stop();
                         isPlaying = false;
                     }
                 }
             }
         });
 
-
+        //Add new Station to the list, refresh the view and save the list in SPFs
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // playRadio(link_edt.getText().toString(), intent);
-                addStation();
 
+                addStation();
                 ((BaseAdapter)adapter).notifyDataSetChanged();
                 saveList();
 
@@ -105,7 +107,9 @@ public class RadioActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                playRadio(list.get(position), intent);
+
+                play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
+                        serviceConnection);
                 isPlaying=true;
             }
         });
@@ -128,6 +132,19 @@ public class RadioActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end userInput()
+
+
+
+    //Start Radio Service
+    public void playRadio(String link, Intent intent){
+        intent.putExtra("URI", link);
+        startService(intent);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+    //==============================================================================================end playRadio()
+
+
+
 
 
     //Load and save lists in Shared Preferences
@@ -173,23 +190,15 @@ public class RadioActivity extends AppCompatActivity {
     }
     //==============================================================================================end userInput()
 
-    //Start Radio Service
-    public void playRadio(String link, Intent intent){
-        intent.putExtra("link", link);
-        startService(intent);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-    //==============================================================================================end playRadio()
-
     //Establish Service Connection
     public ServiceConnection getServiceConnection() {
 
         if(serviceConnection==null){
             serviceConnection=new ServiceConnection() {
                 @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    RadioService.serviceBinder myServiceBinder=(RadioService.serviceBinder)service;
-                    RadioService=myServiceBinder.getService();
+                public void onServiceConnected(ComponentName name, IBinder iBinder) {
+                    MusicService.serviceBinder myServiceBinder=(MusicService.serviceBinder)iBinder;
+                    MusicService=myServiceBinder.getService();
                     bound=true;
                 }
 
