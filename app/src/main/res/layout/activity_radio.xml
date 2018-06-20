@@ -15,7 +15,7 @@
         android:layout_height="402dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#CACACA" />
+        android:background="#aaaaaa" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -35,20 +35,8 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/button_add"
-            android:layout_width="70dp"
-            android:layout_height="35dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="#000000"
-            android:text="@string/add"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
         <TextView
-            android:id="@+id/songName_tv"
+            android:id="@+id/stationName_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

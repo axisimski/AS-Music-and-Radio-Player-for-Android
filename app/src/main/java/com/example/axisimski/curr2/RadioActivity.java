@@ -12,7 +12,11 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -44,6 +49,7 @@ public class RadioActivity extends AppCompatActivity {
     private PlayMusic play= new PlayMusic(); //Player
     private boolean bound=false;
     private int indexLastStation=0;
+    private TextView station_tv;
 
 
     @Override
@@ -55,6 +61,7 @@ public class RadioActivity extends AppCompatActivity {
         play_button=findViewById(R.id.button_play);
         add_button=findViewById(R.id.button_add);
         listView=findViewById(R.id.listView);
+        station_tv=findViewById(R.id.stationName_tv);
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
         intent=new Intent(RadioActivity.this, MusicService.class);
@@ -80,7 +87,8 @@ public class RadioActivity extends AppCompatActivity {
                 if(list.get(0)!=null) {
 
                     if (!isPlaying) {
-                        playRadio(list.get(indexLastStation), intent);
+                        play.playMusic(list.get(indexLastStation), titlelist, list,intent,getApplicationContext(),
+                                serviceConnection);
                         updateValues(indexLastStation);
                         isPlaying = true;
                     } else {
@@ -97,9 +105,9 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addStation();
-                ((BaseAdapter)adapter).notifyDataSetChanged();
-                saveList();
+          //      addStation();
+              ////  ((BaseAdapter)adapter).notifyDataSetChanged();
+              //  saveList();
 
             }
         });
@@ -113,6 +121,7 @@ public class RadioActivity extends AppCompatActivity {
                         serviceConnection);
                 isPlaying=true;
                 updateValues(position);
+                saveList();
             }
         });
 
@@ -137,18 +146,6 @@ public class RadioActivity extends AppCompatActivity {
 
 
 
-    //Start Radio Service
-    public void playRadio(String link, Intent intent){
-        intent.putExtra("URI", link);
-        startService(intent);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-    //==============================================================================================end playRadio()
-
-
-
-
-
     //Load and save lists in Shared Preferences
     public void saveList(){
         SharedPreferences sharedPreferences=getApplicationContext().
@@ -162,6 +159,8 @@ public class RadioActivity extends AppCompatActivity {
 
         editor.putString("jsonURL", jsonURL);
         editor.putString("jsonName", jsonName);
+        editor.putInt("indexLastSong",indexLastStation);
+
 
         editor.apply();
     }
@@ -174,6 +173,7 @@ public class RadioActivity extends AppCompatActivity {
 
         String jsonURL=sharedPreferences.getString("jsonURL","");
         String jsonName=sharedPreferences.getString("jsonName", "");
+        indexLastStation=sharedPreferences.getInt("indexLastSong",0);
 
         if(jsonURL!="") {
 
@@ -272,6 +272,39 @@ public class RadioActivity extends AppCompatActivity {
          play_button.setText("⌷⌷");
      }//=============================================================================================end updateValues();
 
+    //Populate Action Bar
+    public boolean onCreateOptionsMenu(Menu menu){
 
+        MenuInflater inflater =getMenuInflater();
+        inflater.inflate(R.menu.menu_radio, menu);
+
+        //Button for Radio Activity
+        MenuItem radioItem= menu.findItem(R.id.item_music);
+        radioItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent radioIntent=new Intent(RadioActivity.this, MainActivity.class);
+                startActivity(radioIntent);
+                return false;
+            }
+        });
+
+        //Add station
+        MenuItem addItem= menu.findItem(R.id.item_add);
+        addItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                addStation();
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+                saveList();
+                return false;
+            }
+        });
+
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    //==============================================================================================end SearchMenu();
 
 }//end class()
