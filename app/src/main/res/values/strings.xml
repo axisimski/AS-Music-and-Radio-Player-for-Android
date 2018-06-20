@@ -4,5 +4,6 @@
     <string name="play">▶</string>
     <string name="next">&gt;</string>
     <string name="shuffle">🔀</string>
+    <string name="add">+</string>
 
 </resources>

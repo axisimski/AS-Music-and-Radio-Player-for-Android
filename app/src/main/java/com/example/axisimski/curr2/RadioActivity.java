@@ -67,16 +67,6 @@ public class RadioActivity extends AppCompatActivity {
     }
     //==============================================================================================end onCreate()
 
-    public void populateList(){
-
-    }
-
-
-
-
-
-
-
 
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
@@ -85,13 +75,15 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!isPlaying){
-                    playRadio("http://88.80.96.25:8020", intent);
-                    isPlaying=true;
-                }
-                else {
-                    RadioService.mediaPlayer.stop();
-                    isPlaying=false;
+                if(list.get(0)!=null) {
+
+                    if (!isPlaying) {
+                        playRadio(list.get(0), intent);
+                        isPlaying = true;
+                    } else {
+                        RadioService.mediaPlayer.stop();
+                        isPlaying = false;
+                    }
                 }
             }
         });
@@ -126,6 +118,9 @@ public class RadioActivity extends AppCompatActivity {
                 list.remove(pos);
                 titlelist.remove(pos);
                 ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                //Save list when items are removed
+                saveList();
 
                 return true;
             }
