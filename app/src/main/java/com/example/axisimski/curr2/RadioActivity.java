@@ -2,9 +2,11 @@ package com.example.axisimski.curr2;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -47,7 +49,7 @@ public class RadioActivity extends AppCompatActivity {
         titlelist=new ArrayList<>();
         intent=new Intent(RadioActivity.this, RadioService.class);
 
-        titlelist.add("Radio Ultra");
+        titlelist.add("Radio Ultra");//########################################################
 
 
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
@@ -57,6 +59,17 @@ public class RadioActivity extends AppCompatActivity {
         userInput();
     }
     //==============================================================================================end onCreate()
+
+    public void populateList(){
+
+    }
+
+
+
+
+
+
+
 
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
@@ -79,12 +92,52 @@ public class RadioActivity extends AppCompatActivity {
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playRadio(link_edt.getText().toString(), intent);
+                //playRadio(link_edt.getText().toString(), intent);
+
+                String URL="";
+                readURL();
+
             }
         });
 
     }
     //==============================================================================================end userInput()
+
+    public void readURL(){
+
+        AlertDialog.Builder addURL= new AlertDialog.Builder(RadioActivity.this);
+
+        addURL.setTitle("Enter URL Here");
+        final EditText edt=new EditText(RadioActivity.this);
+        addURL.setView(edt);
+
+        addURL.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        addURL.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog alertDialog=addURL.create();
+        alertDialog.show();
+
+
+
+
+    }
+
+
+
+
+
+
+
 
     //Start Radio Service
     public void playRadio(String link, Intent intent){
@@ -93,8 +146,6 @@ public class RadioActivity extends AppCompatActivity {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
     //==============================================================================================end playRadio()
-
-
 
 
 
