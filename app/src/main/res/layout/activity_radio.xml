@@ -19,16 +19,6 @@
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="390dp" />
 
-    <EditText
-        android:id="@+id/link_edt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="114dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
-
     <Button
         android:id="@+id/button_add"
         android:layout_width="wrap_content"

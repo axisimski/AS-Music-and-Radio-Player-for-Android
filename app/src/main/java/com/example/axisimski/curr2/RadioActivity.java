@@ -10,7 +10,9 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -51,17 +53,22 @@ public class RadioActivity extends AppCompatActivity {
         //Initialize Variables
         play_button=findViewById(R.id.button_play);
         add_button=findViewById(R.id.button_add);
-        link_edt=findViewById(R.id.link_edt);
         listView=findViewById(R.id.listView);
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
         intent=new Intent(RadioActivity.this, RadioService.class);
 
-        titlelist.add("Radio Ultra");//########################################################
-
-
+        //loadList();
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
+
+
+         loadList();
+       // list.add("http://88.80.96.25:8020");
+        //titlelist.add("Радио Ултра");
+
+
+
 
         //User Input
         userInput();
@@ -95,8 +102,9 @@ public class RadioActivity extends AppCompatActivity {
                     isPlaying=false;
                 }*/
 
+               // loadList();
+                //((BaseAdapter)adapter).notifyDataSetChanged();
                 loadList();
-                ((BaseAdapter)adapter).notifyDataSetChanged();
 
             }
         });
@@ -106,8 +114,31 @@ public class RadioActivity extends AppCompatActivity {
             public void onClick(View v) {
                // playRadio(link_edt.getText().toString(), intent);
                 addStation();
-                ((BaseAdapter)adapter).notifyDataSetChanged();
+
                 saveList();
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+            }
+        });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                playRadio(list.get(position), intent);
+                isPlaying=true;
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id) {
+
+                list.remove(pos);
+                titlelist.remove(pos);
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                return true;
             }
         });
 
@@ -141,14 +172,19 @@ public class RadioActivity extends AppCompatActivity {
         String jsonURL=sharedPreferences.getString("jsonURL","");
         String jsonName=sharedPreferences.getString("jsonName", "");
 
-        List tempName=gson.fromJson(jsonName, new TypeToken<List<String>>(){}.getType());
-        titlelist.clear();
-        titlelist.addAll((List)tempName);
-        ((BaseAdapter)adapter).notifyDataSetChanged();
+        if(jsonURL!="") {
 
-        List tempURL=gson.fromJson(jsonName, new TypeToken<List<String>>(){}.getType());
-        list.clear();
-        list.addAll((List)tempURL);
+            List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
+            }.getType());
+            titlelist.clear();
+            titlelist.addAll((List) tempName);
+            ((BaseAdapter) adapter).notifyDataSetChanged();
+
+            List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
+            }.getType());
+            list.clear();
+            list.addAll((List) tempURL);
+        }
     }
     //==============================================================================================end userInput()
 
