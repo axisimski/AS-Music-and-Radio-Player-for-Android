@@ -262,6 +262,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        MenuItem radioItem= menu.findItem(R.id.item_radio);
+        radioItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent radioIntent=new Intent(MainActivity.this, RadioActivity.class);
+                startActivity(radioIntent);
+                return false;
+            }
+        });
+
+
+
+
         return super.onCreateOptionsMenu(menu);
     }
     //==============================================================================================end SearchMenu();
