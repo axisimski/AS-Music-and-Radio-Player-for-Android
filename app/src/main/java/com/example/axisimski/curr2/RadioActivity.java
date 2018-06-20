@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class RadioActivity extends AppCompatActivity {
     private Intent intent; //Intent
     private int numStations=0;
     private boolean bound=false;
+    private String URLtemp="";
 
 
     @Override
@@ -92,11 +95,9 @@ public class RadioActivity extends AppCompatActivity {
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //playRadio(link_edt.getText().toString(), intent);
-
-                String URL="";
+               // playRadio(link_edt.getText().toString(), intent);
                 readURL();
-
+                ((BaseAdapter)adapter).notifyDataSetChanged();
             }
         });
 
@@ -107,14 +108,14 @@ public class RadioActivity extends AppCompatActivity {
 
         AlertDialog.Builder addURL= new AlertDialog.Builder(RadioActivity.this);
 
-        addURL.setTitle("Enter URL Here");
+        addURL.setTitle("Enter URL Here:");
         final EditText edt=new EditText(RadioActivity.this);
         addURL.setView(edt);
 
         addURL.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+              list.add(edt.getText().toString());
             }
         });
         addURL.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -124,11 +125,30 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
-        AlertDialog alertDialog=addURL.create();
-        alertDialog.show();
+        AlertDialog URLAlertDialog=addURL.create();
+        URLAlertDialog.show();
+        //------------------------------------------------------------------------------------------//end adding URL
+        AlertDialog.Builder addName= new AlertDialog.Builder(RadioActivity.this);
 
+        addName.setTitle("Enter Station Name:");
+        final EditText edtName=new EditText(RadioActivity.this);
+        addName.setView(edtName);
 
+        addName.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                titlelist.add(edtName.getText().toString());
+            }
+        });
+        addName.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+
+        AlertDialog NameAlertDialoge=addName.create();
+        NameAlertDialoge.show();
 
     }
 
