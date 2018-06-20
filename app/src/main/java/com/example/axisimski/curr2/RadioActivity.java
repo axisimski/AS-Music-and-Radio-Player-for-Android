@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,67 +99,26 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                // playRadio(link_edt.getText().toString(), intent);
-                readURL();
+                addStation();
                 ((BaseAdapter)adapter).notifyDataSetChanged();
             }
         });
 
     }
     //==============================================================================================end userInput()
+    public void save(){
+        SharedPreferences sharedPreferences=getApplicationContext().
+                getSharedPreferences("LIST", Context.MODE_PRIVATE);
 
-    public void readURL(){
+        SharedPreferences.Editor editor=sharedPreferences.edit();
 
-        AlertDialog.Builder addURL= new AlertDialog.Builder(RadioActivity.this);
+        Gson gson=new Gson();
+        String jsonURL =gson.toJson(list);
+        String jsonName=gson.toJson(titlelist);
 
-        addURL.setTitle("Enter URL Here:");
-        final EditText edt=new EditText(RadioActivity.this);
-        addURL.setView(edt);
-
-        addURL.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-              list.add(edt.getText().toString());
-            }
-        });
-        addURL.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog URLAlertDialog=addURL.create();
-        URLAlertDialog.show();
-        //------------------------------------------------------------------------------------------//end adding URL
-        AlertDialog.Builder addName= new AlertDialog.Builder(RadioActivity.this);
-
-        addName.setTitle("Enter Station Name:");
-        final EditText edtName=new EditText(RadioActivity.this);
-        addName.setView(edtName);
-
-        addName.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                titlelist.add(edtName.getText().toString());
-            }
-        });
-        addName.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog NameAlertDialoge=addName.create();
-        NameAlertDialoge.show();
-
+        editor.putString("JURL", jsonURL);
+        editor.putString("JName", jsonName);
     }
-
-
-
-
-
-
 
 
     //Start Radio Service
@@ -190,6 +152,58 @@ public class RadioActivity extends AppCompatActivity {
         }
         return serviceConnection;
     }//=============================================================================================end getServiceConnection
+
+    //Read in the URL and name of custom Radio Stations by using two Alert Dialog boxes.
+    //Add them to their respective lists.
+    public void addStation(){
+
+        AlertDialog.Builder addURL= new AlertDialog.Builder(RadioActivity.this);
+
+        addURL.setTitle("Enter URL Here:");
+        final EditText edt=new EditText(RadioActivity.this);
+        addURL.setView(edt);
+
+        addURL.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                list.add(edt.getText().toString());
+            }
+        });
+        addURL.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog URLAlertDialog=addURL.create();
+        URLAlertDialog.show();
+
+        //------------------------------------------------------------------------------------------//end adding URL
+        AlertDialog.Builder addName= new AlertDialog.Builder(RadioActivity.this);
+
+        addName.setTitle("Enter Station Name:");
+        final EditText edtName=new EditText(RadioActivity.this);
+        addName.setView(edtName);
+
+        addName.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                titlelist.add(edtName.getText().toString());
+            }
+        });
+        addName.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog NameAlertDialog=addName.create();
+        NameAlertDialog.show();
+
+    }
+    //==============================================================================================end addStation()
 
 
 
