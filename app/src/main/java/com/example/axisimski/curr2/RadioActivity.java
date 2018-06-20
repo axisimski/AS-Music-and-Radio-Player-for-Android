@@ -37,7 +37,7 @@ import java.util.List;
 
 public class RadioActivity extends AppCompatActivity {
 
-    private Button play_button, add_button;  //Buttons for playing/pause, adding a radio station
+    private Button play_button;  //Buttons for playing/pause, adding a radio station
     private ServiceConnection serviceConnection=getServiceConnection();
     private MusicService MusicService=new MusicService();
     private boolean isPlaying=false; //Is music playing? Play/Pause
@@ -50,7 +50,6 @@ public class RadioActivity extends AppCompatActivity {
     private boolean bound=false;
     private int indexLastStation=0;
     private TextView station_tv;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +80,9 @@ public class RadioActivity extends AppCompatActivity {
              station_tv.setText(currentlyPlaying);
              play_button.setText("⌷⌷");
          }
-
          userInput();
     }
     //==============================================================================================end onCreate()
-
-
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
 
@@ -107,7 +103,6 @@ public class RadioActivity extends AppCompatActivity {
                         isPlaying = true;
                     }
                     else {
-
                         MusicService.pause();
                         isPlaying = false;
                         play_button.setText("▶");
@@ -149,24 +144,17 @@ public class RadioActivity extends AppCompatActivity {
     }
     //==============================================================================================end userInput()
 
-
-
     //Load and save lists in Shared Preferences
     public void saveList(){
         SharedPreferences sharedPreferences=getApplicationContext().
                 getSharedPreferences("LIST", Context.MODE_PRIVATE);
-
         SharedPreferences.Editor editor=sharedPreferences.edit();
-
         Gson gson=new Gson();
         String jsonURL =gson.toJson(list);
         String jsonName=gson.toJson(titlelist);
-
         editor.putString("jsonURL", jsonURL);
         editor.putString("jsonName", jsonName);
         editor.putInt("indexLastSong",indexLastStation);
-
-
         editor.apply();
     }
 
@@ -175,23 +163,19 @@ public class RadioActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences=getApplicationContext().
                 getSharedPreferences("LIST", Context.MODE_PRIVATE);
         Gson gson=new Gson();
-
         String jsonURL=sharedPreferences.getString("jsonURL","");
         String jsonName=sharedPreferences.getString("jsonName", "");
         indexLastStation=sharedPreferences.getInt("indexLastSong",0);
 
         if(!jsonURL.equals("")) {
-
             List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
             }.getType());
             titlelist.clear();
             titlelist.addAll((List) tempName);
-
             List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
             }.getType());
             list.clear();
             list.addAll((List) tempURL);
-
             ((BaseAdapter) adapter).notifyDataSetChanged();
         }
     }
@@ -308,10 +292,17 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
-
-
         return super.onCreateOptionsMenu(menu);
     }
     //==============================================================================================end SearchMenu();
+
+    //Send info to music player
+   /* @Override
+    public void onBackPressed(){
+        Intent n=new Intent(RadioActivity.this, MainActivity.class);
+        n.putExtra("StationName", titlelist.get(indexLastStation));
+        n.putExtra("isPlaying", MusicService.isPlaying());
+        startActivity(n);
+    }*/
 
 }//end class()

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
+    private boolean isPlaying=false;
      //==============================================================================================end Declarations
 
     @Override
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//=================================================================#######################################
         //Initialize variables
         intent= new Intent(MainActivity.this,MusicService.class);
         play_button=findViewById(R.id.play_button);
@@ -88,6 +88,15 @@ public class MainActivity extends AppCompatActivity {
         if(firstUse){
             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
         }
+
+        Intent i=getIntent();
+        String currentlyPlaying=i.getStringExtra("currentlyPlaying");
+        isPlaying=i.getBooleanExtra("isPlaying", false);
+        if(i.getBooleanExtra("isPlaying",false)) {
+            songName_tv.setText(currentlyPlaying);
+             play_button.setText("⌷⌷");
+        }
+
         saveSettings(indexLastSong);
         userInput();
 
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(firstPlay){
+               if(firstPlay){
                     play.playMusic(list.get(indexLastSong), titlelist, list,intent,getApplicationContext(),
                             serviceConnection);
                     updateValues(indexLastSong);
