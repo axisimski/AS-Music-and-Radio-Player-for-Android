@@ -42,7 +42,6 @@ public class RadioActivity extends AppCompatActivity {
     private Intent intent; //Intent
     private int numStations=0;
     private boolean bound=false;
-    private String URLtemp="";
 
 
     @Override
@@ -62,16 +61,9 @@ public class RadioActivity extends AppCompatActivity {
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
         listView.setAdapter(adapter);
 
-
+        //Load list of radio stations from shared prefs and enable UI
          loadList();
-       // list.add("http://88.80.96.25:8020");
-        //titlelist.add("Радио Ултра");
-
-
-
-
-        //User Input
-        userInput();
+         userInput();
     }
     //==============================================================================================end onCreate()
 
@@ -93,21 +85,17 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*if(!isPlaying){
+                if(!isPlaying){
                     playRadio("http://88.80.96.25:8020", intent);
                     isPlaying=true;
                 }
                 else {
                     RadioService.mediaPlayer.stop();
                     isPlaying=false;
-                }*/
-
-               // loadList();
-                //((BaseAdapter)adapter).notifyDataSetChanged();
-                loadList();
-
+                }
             }
         });
+
 
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,12 +103,13 @@ public class RadioActivity extends AppCompatActivity {
                // playRadio(link_edt.getText().toString(), intent);
                 addStation();
 
-                saveList();
                 ((BaseAdapter)adapter).notifyDataSetChanged();
+                saveList();
+
             }
         });
 
-
+        //On item click play.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -129,11 +118,11 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
+        //Remove item from list (Delete Radio Station on long hold)
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
-
                 list.remove(pos);
                 titlelist.remove(pos);
                 ((BaseAdapter)adapter).notifyDataSetChanged();
@@ -178,12 +167,13 @@ public class RadioActivity extends AppCompatActivity {
             }.getType());
             titlelist.clear();
             titlelist.addAll((List) tempName);
-            ((BaseAdapter) adapter).notifyDataSetChanged();
 
             List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
             }.getType());
             list.clear();
             list.addAll((List) tempURL);
+
+            ((BaseAdapter) adapter).notifyDataSetChanged();
         }
     }
     //==============================================================================================end userInput()
@@ -232,6 +222,7 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 list.add(edt.getText().toString());
+                saveList();
             }
         });
         addURL.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
