@@ -36,7 +36,6 @@ public class RadioActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection=getServiceConnection();
     private MusicService MusicService=new MusicService();
     private boolean isPlaying=false; //Is music playing? Play/Pause
-    private EditText link_edt; //Edit text for user inputed links...may move latter
     private ListView listView; //UI Radio Station list
     private List<String> list; //list containing Radio Station URLs
     private List <String> titlelist; //list containing Radio Station Titles
@@ -81,11 +80,13 @@ public class RadioActivity extends AppCompatActivity {
                 if(list.get(0)!=null) {
 
                     if (!isPlaying) {
-                        playRadio(list.get(0), intent);
+                        playRadio(list.get(indexLastStation), intent);
+                        updateValues(indexLastStation);
                         isPlaying = true;
                     } else {
                         MusicService.mediaPlayer.stop();
                         isPlaying = false;
+                        play_button.setText("▶");
                     }
                 }
             }
@@ -111,6 +112,7 @@ public class RadioActivity extends AppCompatActivity {
                 play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
                         serviceConnection);
                 isPlaying=true;
+                updateValues(position);
             }
         });
 
@@ -264,6 +266,11 @@ public class RadioActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end addStation()
+    //Update last song, set song name text box. (ONlY call on play Music)
+    public void updateValues(int i){
+        indexLastStation=list.indexOf(list.get(i));
+         play_button.setText("⌷⌷");
+     }//=============================================================================================end updateValues();
 
 
 
