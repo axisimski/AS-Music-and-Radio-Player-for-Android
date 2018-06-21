@@ -73,15 +73,16 @@ public class RadioActivity extends AppCompatActivity {
 
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
-         Intent i=getIntent();
-         isPlaying=i.getBooleanExtra("isPlaying",false);
-         String currentlyPlaying=i.getStringExtra("currentlyPlaying");
-         if(isPlaying) {
-             station_tv.setText(currentlyPlaying);
-             play_button.setText("⌷⌷");
-         }
+        if(MusicService.isPlaying()) {
+            SharedPreferences sp=getApplicationContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+            station_tv.setText(sp.getString("TitleLastPlayed", ""));
+            if(!titlelist.contains(sp.getString("TitleLastPlayed", ""))) {
+                play_button.setText("⌷⌷");
+            }
 
-         MusicService.pause();
+            else{play_button.setText("■");}
+        }
+
          userInput();
     }
     //==============================================================================================end onCreate()
@@ -298,13 +299,6 @@ public class RadioActivity extends AppCompatActivity {
     }
     //==============================================================================================end SearchMenu();
 
-    //Send info to music player
-    @Override
-    public void onBackPressed(){
-        Intent n=new Intent(RadioActivity.this, MainActivity.class);
-        n.putExtra("StationName", titlelist.get(indexLastStation));
-        n.putExtra("isPlaying", MusicService.isPlaying());
-        startActivity(n);
-    }
+
 
 }//end class()

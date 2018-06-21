@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
         firstUse=false;
         editor.putInt("indexLastSong",indexLastSong);
         editor.putBoolean("firstPlay", firstUse);
+        editor.putString("TitleLastPlayed","");
         editor.apply();
     }
     //==============================================================================================end ServiceConnection();
@@ -323,4 +324,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //==============================================================================================end ServiceConnection();
+    //If coming back check if MediaPlayer is playing
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        if(MusicService.isPlaying()) {
+            SharedPreferences sp=getApplicationContext().getSharedPreferences("RadioSharedPrefs", Context.MODE_PRIVATE);
+            songName_tv.setText(sp.getString("TitleLastPlayed", ""));
+            play_button.setText("■");
+        }
+    }
+
 }//End class();
