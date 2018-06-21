@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
     SharedPreferences sp;
+
+    boolean isRadio=false;
      //==============================================================================================end Declarations
 
     @Override
@@ -101,34 +103,7 @@ public class MainActivity extends AppCompatActivity {
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(sp.getBoolean("Radio",false)){
-                    MusicService.pause();
-                    play_button.setText("▶");
-                //    firstPlay=false;
-                    SharedPreferences.Editor editor=sp.edit();
-                    editor.putBoolean("Radio", false);
-                    editor.apply();
-                }
-
-                else {
-                    if (firstPlay) {
-                        play.playMusic(list.get(indexLastSong), titlelist, list, intent, getApplicationContext(),
-                                serviceConnection);
-                        updateValues(indexLastSong);
-                        setSeekBar();
-                        saveValues(indexLastSong);
-                    } else {
-                        if (MusicService.isPlaying()) {
-                            MusicService.pause();
-                            play_button.setText("▶");
-                        } else {
-                            MusicService.start();
-                            setSeekBar();
-                            play_button.setText("⌷⌷");
-                        }
-                    }
-                }
+               playPause();
             }
         });//---------------------------------------------------------------------------------------
 
@@ -192,8 +167,54 @@ public class MainActivity extends AppCompatActivity {
         songName_tv.setText(titlelist.get(i));
         play_button.setText("⌷⌷");
         firstPlay=false;
+        sp.edit().putBoolean("Radio", false).apply();
+        Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
+
 
     }//=============================================================================================end updateValues();
+
+    public void playPause(){
+        if(sp.getBoolean("Radio",false)){
+
+            if(MusicService.isPlaying()) {
+                MusicService.pause();
+                play_button.setText("▶");
+            }
+            else{
+               MusicService.start();
+               play_button.setText("■");
+            }
+        }//--------------------------------------------------------------------------------------------
+        else{
+            if(firstPlay) {
+                play.playMusic(list.get(indexLastSong), titlelist, list, intent, getApplicationContext(),
+                        serviceConnection);
+                updateValues(indexLastSong);
+                setSeekBar();
+                saveValues(indexLastSong);
+            } else {
+                if (MusicService.isPlaying()) {
+                    MusicService.pause();
+                    play_button.setText("▶");
+                } else {
+                    MusicService.start();
+                    setSeekBar();
+                    play_button.setText("⌷⌷");
+                }
+            }
+        }
+    }//=============================================================================================end playPause();
+
+
+
+
+
+
+
+
+
+
+
 
     //set SeekBar by polling MediaService (Also sets title textView)
     public void setSeekBar(){
@@ -334,12 +355,15 @@ public class MainActivity extends AppCompatActivity {
 
             if(sp.getBoolean("Radio", false)){
                 play_button.setText("■");
-            }else {play_button.setText("⌷⌷");}
+            }else {
+                play_button.setText("⌷⌷");}
         }
         else{
             songName_tv.setText("");
             play_button.setText("▶");
         }
+
+        Toast.makeText(getApplicationContext(), "RET"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
 
 
     }//=============================================================================================end onRestart();
