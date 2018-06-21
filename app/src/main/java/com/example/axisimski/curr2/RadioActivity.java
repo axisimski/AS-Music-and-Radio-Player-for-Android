@@ -40,7 +40,6 @@ public class RadioActivity extends AppCompatActivity {
     private Button play_button;  //Buttons for playing/pause, adding a radio station
     private ServiceConnection serviceConnection=getServiceConnection();
     private MusicService MusicService=new MusicService();
-    private boolean isPlaying=false; //Is music playing? Play/Pause
     private ListView listView; //UI Radio Station list
     private List<String> list; //list containing Radio Station URLs
     private List <String> titlelist; //list containing Radio Station Titles
@@ -76,16 +75,24 @@ public class RadioActivity extends AppCompatActivity {
         if(MusicService.isPlaying()) {
             SharedPreferences sp=getApplicationContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
             station_tv.setText(sp.getString("TitleLastPlayed", ""));
-            if(!titlelist.contains(sp.getString("TitleLastPlayed", ""))) {
+
+            if(!sp.getBoolean("Radio", false)) {
                 play_button.setText("⌷⌷");
             }
 
             else{play_button.setText("■");}
+
+            Toast.makeText(getApplicationContext(), Boolean.toString(sp.getBoolean("Radio", false)), Toast.LENGTH_SHORT).show();
         }
 
          userInput();
     }
     //==============================================================================================end onCreate()
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+    }
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
 
@@ -94,20 +101,13 @@ public class RadioActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(list.get(0)!=null) {
-
-                    String x=Boolean.toString(isPlaying);
-                    Toast.makeText(getApplicationContext(), x+"FFF", Toast.LENGTH_SHORT).show();
-                  //  MusicService.mediaPlayer.stop();
-
-                    if (!isPlaying) {
+                    if (!MusicService.isPlaying()) {
                         play.playMusic(list.get(indexLastStation), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
                         updateValues(indexLastStation);
-                        isPlaying = true;
                     }
                     else {
                         MusicService.pause();
-                        isPlaying = false;
                         play_button.setText("▶");
                     }
                 }
@@ -122,7 +122,7 @@ public class RadioActivity extends AppCompatActivity {
 
                 play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
                         serviceConnection);
-                isPlaying=true;
+
                 updateValues(position);
                 saveList();
             }
@@ -146,6 +146,30 @@ public class RadioActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end userInput()
+
+
+    //Update last song, set song name text box. (ONlY call on play Music)
+    public void updateValues(int i){
+        SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+        indexLastStation=list.indexOf(list.get(i));
+        play_button.setText("■");
+        station_tv.setText(titlelist.get(i));
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putString("TitleLastPlayed",titlelist.get(i));
+        editor.putBoolean("Radio", true);
+        editor.apply();
+
+    }//=============================================================================================end updateValues();
+
+
+
+
+
+
+
+
+
+
 
     //Load and save lists in Shared Preferences
     public void saveList(){
@@ -258,13 +282,6 @@ public class RadioActivity extends AppCompatActivity {
 
     }
     //==============================================================================================end addStation()
-    //Update last song, set song name text box. (ONlY call on play Music)
-    public void updateValues(int i){
-        indexLastStation=list.indexOf(list.get(i));
-        play_button.setText("⌷⌷");
-        station_tv.setText(titlelist.get(i));
-
-    }//=============================================================================================end updateValues();
 
     //Populate Action Bar
     public boolean onCreateOptionsMenu(Menu menu){

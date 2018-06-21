@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
-    private boolean isPlaying=false;
      //==============================================================================================end Declarations
 
     @Override
@@ -82,27 +81,14 @@ public class MainActivity extends AppCompatActivity {
             adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
             listView.setAdapter(adapter);
         }//-----------------------------------------------------------------------------------------end CheckPermissions
+        loadValues();//load whether the app has been used before and the last song play
 
-        loadSettings();//load whether the app has been used before and the last song play
         //First time after installing the app files are not visible, must be restarted
         if(firstUse){
             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
         }
-
-        MusicService.pause();
-
-        Intent i=getIntent();
-        String currentlyPlaying=i.getStringExtra("StationName");
-        isPlaying=i.getBooleanExtra("isPlaying", false);
-
-        if(isPlaying) {
-            songName_tv.setText(currentlyPlaying);
-            play_button.setText("⌷⌷");
-        }
-
-        saveSettings(indexLastSong);
+        saveValues(indexLastSong);
         userInput();
-
     }
     //==================================================================================================end onCreate();
 
@@ -118,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             serviceConnection);
                     updateValues(indexLastSong);
                     setSeekBar();
-                    saveSettings(indexLastSong);
+                    saveValues(indexLastSong);
                  }
                 else {
                     if(MusicService.isPlaying()) {
@@ -144,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                         serviceConnection);
                 updateValues(songIndex);
                 setSeekBar();
-                saveSettings(songIndex);
+                saveValues(songIndex);
             }
         });
 
@@ -157,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     updateValues(indexLastSong);
                     setSeekBar();
                     MusicService.playNext((ArrayList)list, (ArrayList)titlelist, song);
-                    saveSettings(indexLastSong);
+                    saveValues(indexLastSong);
                 }
             }
         });//---------------------------------------------------------------------------------------
@@ -184,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 play.playMusic(list.get(i), titlelist, list,intent,getApplicationContext(), serviceConnection);
                 updateValues(i);
                 setSeekBar();
-                saveSettings(i);
+                saveValues(i);
             }
         });//---------------------------------------------------------------------------------------end LVOCL
     }
@@ -195,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         songName_tv.setText(titlelist.get(i));
         play_button.setText("⌷⌷");
         firstPlay=false;
+
     }//=============================================================================================end updateValues();
 
     //set SeekBar by polling MediaService (Also sets title textView)
@@ -249,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                         play.playMusic(templist2.get(i), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
                         updateValues( list.indexOf(templist2.get(i)));
-                        saveSettings(list.indexOf(templist2.get(i)));
+                        saveValues(list.indexOf(templist2.get(i)));
                         setSeekBar();
                         searchView.clearFocus();
                         searchView.onActionViewCollapsed();
@@ -304,19 +291,22 @@ public class MainActivity extends AppCompatActivity {
     //==============================================================================================end ServiceConnection();
 
     //Settings
-    public void saveSettings(int i){
+    public void saveValues(int i){
         SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sp.edit();
         indexLastSong=i;
         firstUse=false;
         editor.putInt("indexLastSong",indexLastSong);
         editor.putBoolean("firstPlay", firstUse);
-        editor.putString("TitleLastPlayed","");
+
+        editor.putString("TitleLastPlayed",titlelist.get(i));
+        editor.putBoolean("Radio", false);
+
         editor.apply();
     }
     //==============================================================================================end ServiceConnection();
 
-    public void loadSettings(){
+    public void loadValues(){
         SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
         if(sp!=null){
             indexLastSong=sp.getInt("indexLastSong",0);
@@ -328,11 +318,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
+
+
+
         if(MusicService.isPlaying()) {
             SharedPreferences sp=getApplicationContext().getSharedPreferences("RadioSharedPrefs", Context.MODE_PRIVATE);
             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
             play_button.setText("■");
         }
+
+        else{songName_tv.setText("");}
     }
 
 }//End class();
