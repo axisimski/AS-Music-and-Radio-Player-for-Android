@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -74,10 +75,18 @@ public class RadioActivity extends AppCompatActivity {
 
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
-        if(MusicService.isPlaying()) {
-            station_tv.setText(sp.getString("TitleLastPlayed", ""));
-               play_button.setText("⌷⌷");
-        }
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(MusicService.isPlaying()) {
+                    station_tv.setText(sp.getString("TitleLastPlayed", ""));
+                    play_button.setText("⌷⌷");
+                }
+            }
+        }, 100);
+
 
          userInput();
     }
