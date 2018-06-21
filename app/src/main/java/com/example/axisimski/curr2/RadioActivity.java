@@ -49,6 +49,7 @@ public class RadioActivity extends AppCompatActivity {
     private boolean bound=false;
     private int indexLastStation=0;
     private TextView station_tv;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class RadioActivity extends AppCompatActivity {
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
         intent=new Intent(RadioActivity.this, MusicService.class);
+        sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
 
         //loadList();
         adapter=new ArrayAdapter<>(this, R.layout.cust_list, titlelist);
@@ -73,15 +75,8 @@ public class RadioActivity extends AppCompatActivity {
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
         if(MusicService.isPlaying()) {
-            SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
             station_tv.setText(sp.getString("TitleLastPlayed", ""));
-
-            if(!sp.getBoolean("Radio", false)) {
-                play_button.setText("⌷⌷");
-            }
-
-            else{play_button.setText("■");}
-
+               play_button.setText("⌷⌷");
         }
 
          userInput();
@@ -91,6 +86,14 @@ public class RadioActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
+        if(MusicService.isPlaying()) {
+            station_tv.setText(sp.getString("TitleLastPlayed", ""));
+            if(!sp.getBoolean("Radio", false)) {
+                play_button.setText("⌷⌷");
+            }
+            else{play_button.setText("■");
+            }
+        }
     }
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
@@ -99,7 +102,20 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(list.get(0)!=null) {
+                if(!sp.getBoolean("Radio",false)){
+
+                    if(MusicService.isPlaying()) {
+                        MusicService.pause();
+                        play_button.setText("▶");
+                    }
+                    else{
+                        MusicService.start();
+                        play_button.setText("⌷⌷");
+                    }
+                }//--------------------------------------------------------------------------------------------
+
+                else if(list.get(0)!=null&&sp.getBoolean("Radio",false)) {
+
                     if (!MusicService.isPlaying()) {
                         play.playMusic(list.get(indexLastStation), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
@@ -122,11 +138,8 @@ public class RadioActivity extends AppCompatActivity {
                 play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
                         serviceConnection);
 
-                SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor=sp.edit();
-                editor.putString("TitleLastPlayed",titlelist.get(position));
-                editor.putBoolean("Radio", true);
-                editor.apply();
+                sp.edit().putString("TitleLastPlayed",titlelist.get(position)).apply();
+                sp.edit().putBoolean("Radio", true).apply();
 
                 updateValues(position);
                 saveList();
@@ -155,11 +168,9 @@ public class RadioActivity extends AppCompatActivity {
 
     //Update last song, set song name text box. (ONlY call on play Music)
     public void updateValues(int i){
-
         indexLastStation=list.indexOf(list.get(i));
         play_button.setText("■");
         station_tv.setText(titlelist.get(i));
-
 
     }//=============================================================================================end updateValues();
 
