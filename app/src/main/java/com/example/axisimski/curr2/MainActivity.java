@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         play_button.setText("⌷⌷");
         firstPlay=false;
         sp.edit().putBoolean("Radio", false).apply();
-        Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
 
 
     }//=============================================================================================end updateValues();
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
             play_button.setText("▶");
         }
 
-        Toast.makeText(getApplicationContext(), "RET"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getApplicationContext(), "RET"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
 
 
     }//=============================================================================================end onRestart();
