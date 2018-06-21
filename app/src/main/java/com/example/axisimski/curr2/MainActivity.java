@@ -320,17 +320,19 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         if(MusicService.isPlaying()) {
-            SharedPreferences sp=getApplicationContext().getSharedPreferences("RadioSharedPrefs", Context.MODE_PRIVATE);
+            SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
-            play_button.setText("■");
 
-            SharedPreferences sp2= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
-
-            Toast.makeText(getApplicationContext(), Boolean.toString(sp2.getBoolean("Radio", false)), Toast.LENGTH_SHORT).show();
-
+            if(sp.getBoolean("Radio", false)){
+                play_button.setText("■");
+            }else {play_button.setText("⌷⌷");}
+        }
+        else{
+            songName_tv.setText("");
+            play_button.setText("▶");
         }
 
-        else{songName_tv.setText("");}
+
     }
 
 }//End class();
