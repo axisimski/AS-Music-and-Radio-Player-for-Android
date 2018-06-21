@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private PlayMusic play= new PlayMusic();
     private ServiceConnection serviceConnection=getServiceConnection();
     private boolean bound; //Is the Service currently bound
+    SharedPreferences sp;
      //==============================================================================================end Declarations
 
     @Override
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         list=new ArrayList<>();
         titlelist=new ArrayList<>();
         songName_tv=findViewById(R.id.songName_tv);
+        sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+
 
         //------------------------------------------------------------------------------------------end var Declaration
         if (ContextCompat.checkSelfPermission(MainActivity.this,
@@ -99,25 +102,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(firstPlay){
-                    play.playMusic(list.get(indexLastSong), titlelist, list,intent,getApplicationContext(),
-                            serviceConnection);
-                    updateValues(indexLastSong);
-                    setSeekBar();
-                    saveValues(indexLastSong);
-                 }
-                else {
-                    if(MusicService.isPlaying()) {
-                        MusicService.pause();
-                        play_button.setText("▶");
-                     }
-                    else {
-                        MusicService.start();
-                        setSeekBar();
-                        play_button.setText("⌷⌷");
-                     }
+                if(sp.getBoolean("Radio",false)){
+                    MusicService.pause();
+                    play_button.setText("▶");
+                //    firstPlay=false;
+                    SharedPreferences.Editor editor=sp.edit();
+                    editor.putBoolean("Radio", false);
+                    editor.apply();
                 }
 
+                else {
+                    if (firstPlay) {
+                        play.playMusic(list.get(indexLastSong), titlelist, list, intent, getApplicationContext(),
+                                serviceConnection);
+                        updateValues(indexLastSong);
+                        setSeekBar();
+                        saveValues(indexLastSong);
+                    } else {
+                        if (MusicService.isPlaying()) {
+                            MusicService.pause();
+                            play_button.setText("▶");
+                        } else {
+                            MusicService.start();
+                            setSeekBar();
+                            play_button.setText("⌷⌷");
+                        }
+                    }
+                }
             }
         });//---------------------------------------------------------------------------------------
 
@@ -318,10 +329,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
-
         if(MusicService.isPlaying()) {
-            SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
-            songName_tv.setText(sp.getString("TitleLastPlayed", ""));
+             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
 
             if(sp.getBoolean("Radio", false)){
                 play_button.setText("■");
@@ -333,6 +342,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    }
+    }//=============================================================================================end onRestart();
 
 }//End class();

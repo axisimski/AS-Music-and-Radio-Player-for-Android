@@ -82,7 +82,6 @@ public class RadioActivity extends AppCompatActivity {
 
             else{play_button.setText("■");}
 
-            Toast.makeText(getApplicationContext(), Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
         }
 
          userInput();
