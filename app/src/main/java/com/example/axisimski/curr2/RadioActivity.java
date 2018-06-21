@@ -73,7 +73,7 @@ public class RadioActivity extends AppCompatActivity {
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
         if(MusicService.isPlaying()) {
-            SharedPreferences sp=getApplicationContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+            SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
             station_tv.setText(sp.getString("TitleLastPlayed", ""));
 
             if(!sp.getBoolean("Radio", false)) {
@@ -82,7 +82,7 @@ public class RadioActivity extends AppCompatActivity {
 
             else{play_button.setText("■");}
 
-            Toast.makeText(getApplicationContext(), Boolean.toString(sp.getBoolean("Radio", false)), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
         }
 
          userInput();
@@ -123,6 +123,12 @@ public class RadioActivity extends AppCompatActivity {
                 play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
                         serviceConnection);
 
+                SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor=sp.edit();
+                editor.putString("TitleLastPlayed",titlelist.get(position));
+                editor.putBoolean("Radio", true);
+                editor.apply();
+
                 updateValues(position);
                 saveList();
             }
@@ -150,14 +156,11 @@ public class RadioActivity extends AppCompatActivity {
 
     //Update last song, set song name text box. (ONlY call on play Music)
     public void updateValues(int i){
-        SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
+
         indexLastStation=list.indexOf(list.get(i));
         play_button.setText("■");
         station_tv.setText(titlelist.get(i));
-        SharedPreferences.Editor editor=sp.edit();
-        editor.putString("TitleLastPlayed",titlelist.get(i));
-        editor.putBoolean("Radio", true);
-        editor.apply();
+
 
     }//=============================================================================================end updateValues();
 
