@@ -76,16 +76,12 @@ public class RadioActivity extends AppCompatActivity {
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+
                 if(MusicService.isPlaying()) {
                     station_tv.setText(sp.getString("TitleLastPlayed", ""));
                     play_button.setText("⌷⌷");
                 }
-            }
-        }, 100);
+
 
 
          userInput();

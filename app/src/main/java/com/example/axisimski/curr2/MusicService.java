@@ -137,7 +137,14 @@ public class MusicService extends Service {
         mediaPlayer.start();
     }
     public boolean isPlaying(){
-        return mediaPlayer.isPlaying();
+
+     //   try {
+            return mediaPlayer.isPlaying();
+    //    }catch (IllegalStateException e) {
+      //     e.printStackTrace();}
+
+       // return false;
+
     }
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
