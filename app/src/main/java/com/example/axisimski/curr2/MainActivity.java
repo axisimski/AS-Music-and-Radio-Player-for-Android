@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //==================================================================================================end onCreate();
 
+
     //Keeps the onClickListeners for the UI elements
     public void userInput(){
 
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 updateValues(songIndex);
                 setSeekBar();
                 saveValues(songIndex);
+
             }
         });
 
@@ -175,7 +177,9 @@ public class MainActivity extends AppCompatActivity {
         play_button.setText("⌷⌷");
         firstPlay=false;
         sp.edit().putBoolean("Radio", false).apply();
-    //    Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
+        sp.edit().putBoolean("isPlaying", true).apply();
+
+        //    Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
 
 
     }//=============================================================================================end updateValues();
@@ -211,15 +215,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }//=============================================================================================end playPause();
-
-
-
-
-
-
-
-
-
 
 
 
@@ -331,17 +326,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Settings
     public void saveValues(int i){
-        SharedPreferences sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sp.edit();
+        sp= getApplicationContext().getSharedPreferences("Setting", Context.MODE_PRIVATE);
         indexLastSong=i;
         firstUse=false;
-        editor.putInt("indexLastSong",indexLastSong);
-        editor.putBoolean("firstPlay", firstUse);
-
-        editor.putString("TitleLastPlayed",titlelist.get(i));
-        editor.putBoolean("Radio", false);
-
-        editor.apply();
+        sp.edit().putInt("indexLastSong",indexLastSong).apply();
+        sp.edit().putBoolean("firstPlay", firstUse).apply();
+        sp.edit().putString("TitleLastPlayed",titlelist.get(i)).apply();
+        sp.edit().putBoolean("Radio", false).apply();
     }
     //==============================================================================================end ServiceConnection();
 
