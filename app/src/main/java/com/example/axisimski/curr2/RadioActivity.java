@@ -312,8 +312,9 @@ public class RadioActivity extends AppCompatActivity {
         radioItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent radioIntent=new Intent(RadioActivity.this, MainActivity.class);
-                startActivity(radioIntent);
+               // Intent radioIntent=new Intent(RadioActivity.this, MainActivity.class);
+               // startActivity(radioIntent);
+                onBackPressed();
                 return false;
             }
         });
