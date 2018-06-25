@@ -83,7 +83,7 @@ public class MusicService extends Service {
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepare();
-            currentSong=songTitleList.get(songList.indexOf(songDataLocation));
+            currentSong=songTitleList.get(songList.indexOf(songDataLocation)) ;
 
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
