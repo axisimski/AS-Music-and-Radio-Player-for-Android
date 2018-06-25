@@ -111,7 +111,8 @@ public class MusicService extends Service {
         }
 
 
-        return super.onStartCommand(intent,flags,startID);
+        return START_NOT_STICKY;
+
     }
     //====================================================================================================
 
@@ -143,12 +144,13 @@ public class MusicService extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        mediaPlayer.stop();
         mediaPlayer.release();
     }
 
     //MediaPlayer Functions
     public void pause(){
-        mediaPlayer.pause();
+        mediaPlayer.stop();
     }
     public void seekTo(int progress){
         mediaPlayer.seekTo(progress);
@@ -167,6 +169,5 @@ public class MusicService extends Service {
     }
 
     //====================================================================================================
-
 
 }//end class
