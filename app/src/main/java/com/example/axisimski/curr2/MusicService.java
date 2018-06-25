@@ -1,7 +1,9 @@
 package com.example.axisimski.curr2;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -11,10 +13,15 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.GetChars;
 import android.util.Log;
+import android.widget.BaseAdapter;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MusicService extends Service {
 
@@ -46,12 +53,28 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startID){
 
+        final ArrayList<String> songList=new ArrayList<String>();
+        final ArrayList<String> songTitleList= new ArrayList<String>();
 
-        final ArrayList<String> songList = intent.getStringArrayListExtra("songList");
-        final ArrayList<String> songTitleList = intent.getStringArrayListExtra("songTitleList");
+        SharedPreferences sharedPreferences=getApplicationContext().
+                getSharedPreferences("spList", Context.MODE_PRIVATE);
+        Gson gson=new Gson();
+        String jsonURL=sharedPreferences.getString("jsonURL","");
+        String jsonName=sharedPreferences.getString("jsonName", "");
+
+        if(!jsonURL.equals("")) {
+            List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
+            }.getType());
+            songTitleList.clear();
+            songTitleList.addAll((List) tempName);
+            List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
+            }.getType());
+            songList.clear();
+            songList.addAll((List) tempURL);
+         }
 
         try {
-            final String songDataLocation= intent.getStringExtra("URI");
+            final String songDataLocation= sharedPreferences.getString("URI", "");;
 
             tlc=0;
             Uri uri=Uri.parse(songDataLocation);
@@ -66,9 +89,9 @@ public class MusicService extends Service {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
 
-                    if(intent.getIntExtra("SEEK",0)>1) {
-                        mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
-                    }
+//                    if(intent.getIntExtra("SEEK",0)>1) {
+                       // mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
+  //                  }
                     mediaPlayer.start();
                 }
             });
@@ -137,14 +160,7 @@ public class MusicService extends Service {
         mediaPlayer.start();
     }
     public boolean isPlaying(){
-
-     //   try {
             return mediaPlayer.isPlaying();
-    //    }catch (IllegalStateException e) {
-      //     e.printStackTrace();}
-
-       // return false;
-
     }
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();

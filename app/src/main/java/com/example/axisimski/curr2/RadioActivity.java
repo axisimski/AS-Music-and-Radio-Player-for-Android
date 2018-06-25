@@ -76,8 +76,7 @@ public class RadioActivity extends AppCompatActivity {
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
 
-
-                if(MusicService.isPlaying()) {
+                if(sp.getBoolean("isPlaying", false)&&!sp.getBoolean("Radio", false)) {
                     station_tv.setText(sp.getString("TitleLastPlayed", ""));
                     play_button.setText("⌷⌷");
                 }
@@ -95,8 +94,10 @@ public class RadioActivity extends AppCompatActivity {
             station_tv.setText(sp.getString("TitleLastPlayed", ""));
             if(!sp.getBoolean("Radio", false)) {
                 play_button.setText("⌷⌷");
+                sp.edit().putBoolean("isPlaying", true).apply();
             }
             else{play_button.setText("■");
+                sp.edit().putBoolean("isPlaying", true).apply();
             }
         }
     }
@@ -112,10 +113,12 @@ public class RadioActivity extends AppCompatActivity {
                     if(MusicService.isPlaying()) {
                         MusicService.pause();
                         play_button.setText("▶");
+                        sp.edit().putBoolean("isPlaying", false).apply();
                     }
                     else{
                         MusicService.start();
                         play_button.setText("⌷⌷");
+                        sp.edit().putBoolean("isPlaying", true).apply();
                     }
                 }//--------------------------------------------------------------------------------------------
 
@@ -129,6 +132,7 @@ public class RadioActivity extends AppCompatActivity {
                     else {
                         MusicService.pause();
                         play_button.setText("▶");
+                        sp.edit().putBoolean("isPlaying", false).apply();
                     }
                 }
             }

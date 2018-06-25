@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        if(MusicService.isPlaying()) {
+        if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)) {
             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
             play_button.setText("■");
         }
@@ -179,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
         sp.edit().putBoolean("Radio", false).apply();
         sp.edit().putBoolean("isPlaying", true).apply();
 
-        //    Toast.makeText(getApplicationContext(), "UPD"+Boolean.toString(sp.getBoolean("Radio", true)), Toast.LENGTH_SHORT).show();
-
 
     }//=============================================================================================end updateValues();
 
@@ -190,10 +188,12 @@ public class MainActivity extends AppCompatActivity {
             if(MusicService.isPlaying()) {
                 MusicService.pause();
                 play_button.setText("▶");
+                sp.edit().putBoolean("isPlaying", false).apply();
             }
             else{
                MusicService.start();
                play_button.setText("■");
+                sp.edit().putBoolean("isPlaying", false).apply();
             }
         }//--------------------------------------------------------------------------------------------
         else{
@@ -207,10 +207,13 @@ public class MainActivity extends AppCompatActivity {
                 if (MusicService.isPlaying()) {
                     MusicService.pause();
                     play_button.setText("▶");
+                    sp.edit().putBoolean("isPlaying", false).apply();
+
                 } else {
                     MusicService.start();
                     setSeekBar();
                     play_button.setText("⌷⌷");
+                    sp.edit().putBoolean("isPlaying", true).apply();
                 }
             }
         }
