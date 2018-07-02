@@ -90,9 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         //First time after installing the app files are not visible, must be restarted
         if(firstUse){
-            Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
-        }
-
+             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
+         }
 
         if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)) {
             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
@@ -102,8 +101,11 @@ public class MainActivity extends AppCompatActivity {
         if(indexLastSong>list.size()){
             indexLastSong=0;
         }
-        saveValues(indexLastSong);
-        userInput();
+
+        if(list.size()>0){
+            saveValues(indexLastSong);
+            userInput();
+        }
     }
     //==================================================================================================end onCreate();
 
@@ -341,7 +343,10 @@ public class MainActivity extends AppCompatActivity {
         firstUse=false;
         sp.edit().putInt("indexLastSong",indexLastSong).apply();
         sp.edit().putBoolean("firstPlay", firstUse).apply();
-        sp.edit().putString("TitleLastPlayed",titlelist.get(i)).apply();
+
+        if(titlelist.size()>0) {
+            sp.edit().putString("TitleLastPlayed", titlelist.get(i)).apply();
+        }
         sp.edit().putBoolean("Radio", false).apply();
     }
     //==============================================================================================end ServiceConnection();
