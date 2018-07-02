@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         //First time after installing the app files are not visible, must be restarted
         if(firstUse){
-             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
+            sp.edit().putBoolean("firstPlay", false).apply();
+            Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
          }
 
         if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)) {
@@ -304,10 +305,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent radioIntent=new Intent(MainActivity.this, RadioActivity.class);
-             //   if(titlelist.size()>indexLastSong) {
+                if(titlelist.size()>indexLastSong) {
                     radioIntent.putExtra("currentlyPlaying", titlelist.get(indexLastSong));
                     radioIntent.putExtra("isPlaying", play_button.getText().equals("⌷⌷"));
-           //     }
+                }
                 startActivity(radioIntent);
                 return false;
             }
