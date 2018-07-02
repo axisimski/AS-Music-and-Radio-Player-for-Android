@@ -150,7 +150,7 @@ public class MusicService extends Service {
 
     //MediaPlayer Functions
     public void pause(){
-        mediaPlayer.stop();
+        mediaPlayer.pause();
     }
     public void seekTo(int progress){
         mediaPlayer.seekTo(progress);

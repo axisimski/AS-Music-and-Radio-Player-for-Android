@@ -208,11 +208,15 @@ public class MainActivity extends AppCompatActivity {
                     MusicService.pause();
                     play_button.setText("▶");
                     sp.edit().putBoolean("isPlaying", false).apply();
+                    //Toast.makeText(getApplicationContext(), "Pause", Toast.LENGTH_SHORT).show();
+
 
                 } else {
                     MusicService.start();
                     setSeekBar();
                     play_button.setText("⌷⌷");
+                 //   Toast.makeText(getApplicationContext(), "Start", Toast.LENGTH_SHORT).show();
+
                     sp.edit().putBoolean("isPlaying", true).apply();
                 }
             }
