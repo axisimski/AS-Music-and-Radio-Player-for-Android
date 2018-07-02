@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
             play_button.setText("■");
         }
 
+        if(indexLastSong>list.size()){
+            indexLastSong=0;
+        }
         saveValues(indexLastSong);
         userInput();
     }
