@@ -72,10 +72,10 @@ public class RadioActivity extends AppCompatActivity {
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
 
-                if(sp.getBoolean("isPlaying", false)&&!sp.getBoolean("Radio", false)) {
-                    station_tv.setText(sp.getString("TitleLastPlayed", ""));
-                    play_button.setText("⌷⌷");
-                }
+        if(sp.getBoolean("isPlaying", false)&&!sp.getBoolean("Radio", false)) {
+             station_tv.setText(sp.getString("TitleLastPlayed", ""));
+             play_button.setText("⌷⌷");
+        }
 
 
 
@@ -140,14 +140,15 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                play.playMusic(list.get(position), titlelist, list,intent,getApplicationContext(),
-                        serviceConnection);
+                if(list.size()>position) {
+                    play.playMusic(list.get(position), titlelist, list, intent, getApplicationContext(),
+                            serviceConnection);
 
-                sp.edit().putString("TitleLastPlayed",titlelist.get(position)).apply();
-                sp.edit().putBoolean("Radio", true).apply();
-
-                updateValues(position);
-                saveList();
+                    sp.edit().putString("TitleLastPlayed", titlelist.get(position)).apply();
+                    sp.edit().putBoolean("Radio", true).apply();
+                    updateValues(position);
+                    saveList();
+                }
             }
         });
 
@@ -156,7 +157,10 @@ public class RadioActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
-                list.remove(pos);
+
+                if(list.size()<pos){
+                     list.remove(pos);
+                }
                 titlelist.remove(pos);
                 ((BaseAdapter)adapter).notifyDataSetChanged();
 
