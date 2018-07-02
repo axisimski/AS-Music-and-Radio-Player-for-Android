@@ -256,6 +256,28 @@ public class RadioActivity extends AppCompatActivity {
     //Add them to their respective lists.
     public void addStation(){
 
+        AlertDialog.Builder addName= new AlertDialog.Builder(RadioActivity.this);
+
+        addName.setTitle("Enter Station Name:");
+        final EditText edtName=new EditText(RadioActivity.this);
+        addName.setView(edtName);
+
+        addName.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                titlelist.add(edtName.getText().toString());
+            }
+        });
+        addName.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog NameAlertDialog=addName.create();
+        NameAlertDialog.show();
+
         AlertDialog.Builder addURL= new AlertDialog.Builder(RadioActivity.this);
 
         addURL.setTitle("Enter URL Here:");
@@ -280,27 +302,6 @@ public class RadioActivity extends AppCompatActivity {
         URLAlertDialog.show();
 
         //------------------------------------------------------------------------------------------//end adding URL
-        AlertDialog.Builder addName= new AlertDialog.Builder(RadioActivity.this);
-
-        addName.setTitle("Enter Station Name:");
-        final EditText edtName=new EditText(RadioActivity.this);
-        addName.setView(edtName);
-
-        addName.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                titlelist.add(edtName.getText().toString());
-            }
-        });
-        addName.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog NameAlertDialog=addName.create();
-        NameAlertDialog.show();
 
     }
     //==============================================================================================end addStation()

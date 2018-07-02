@@ -304,8 +304,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent radioIntent=new Intent(MainActivity.this, RadioActivity.class);
-                radioIntent.putExtra("currentlyPlaying",titlelist.get(indexLastSong));
-                radioIntent.putExtra("isPlaying", play_button.getText().equals("⌷⌷"));
+             //   if(titlelist.size()>indexLastSong) {
+                    radioIntent.putExtra("currentlyPlaying", titlelist.get(indexLastSong));
+                    radioIntent.putExtra("isPlaying", play_button.getText().equals("⌷⌷"));
+           //     }
                 startActivity(radioIntent);
                 return false;
             }
