@@ -71,14 +71,10 @@ public class RadioActivity extends AppCompatActivity {
 
          //Info passed on from MainActivity()
          //Determines what goes in the text box etc..
-
         if(sp.getBoolean("isPlaying", false)&&!sp.getBoolean("Radio", false)) {
              station_tv.setText(sp.getString("TitleLastPlayed", ""));
              play_button.setText("⌷⌷");
         }
-
-
-
          userInput();
     }
     //==============================================================================================end onCreate()
