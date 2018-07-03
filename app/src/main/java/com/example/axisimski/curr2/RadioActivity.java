@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -76,7 +77,14 @@ public class RadioActivity extends AppCompatActivity {
              station_tv.setText(sp.getString("TitleLastPlayed", ""));
              play_button.setText("⌷⌷");
         }
-         userInput();
+
+         if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)) {
+            station_tv.setText(sp.getString("TitleLastPlayed", ""));
+            play_button.setText("■");
+
+        }
+
+        userInput();
     }
     //==============================================================================================end onCreate()
 
@@ -121,6 +129,8 @@ public class RadioActivity extends AppCompatActivity {
                         play.playMusic(list.get(indexLastStation), titlelist, list,intent,getApplicationContext(),
                                 serviceConnection);
                         updateValues(indexLastStation);
+                        sp.edit().putBoolean("isPlaying",true).apply();
+
                     }
                     else {
                         MusicService.pause();
@@ -143,6 +153,7 @@ public class RadioActivity extends AppCompatActivity {
 
                     sp.edit().putString("TitleLastPlayed", titlelist.get(position)).apply();
                     sp.edit().putBoolean("Radio", true).apply();
+                    sp.edit().putBoolean("isPlaying",true).apply();
                     updateValues(position);
                     saveList();
                 }
@@ -206,11 +217,11 @@ public class RadioActivity extends AppCompatActivity {
             List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
             }.getType());
             titlelist.clear();
-            titlelist.addAll((List) tempName);
+            titlelist.addAll(tempName);
             List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
             }.getType());
             list.clear();
-            list.addAll((List) tempURL);
+            list.addAll(tempURL);
             ((BaseAdapter) adapter).notifyDataSetChanged();
         }
     }
