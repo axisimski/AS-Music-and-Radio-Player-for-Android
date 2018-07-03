@@ -171,7 +171,6 @@ public class RadioActivity extends AppCompatActivity {
     }
     //==============================================================================================end userInput()
 
-
     //Update last song, set song name text box. (ONlY call on play Music)
     public void updateValues(int i){
         indexLastStation=list.indexOf(list.get(i));
@@ -179,16 +178,6 @@ public class RadioActivity extends AppCompatActivity {
         station_tv.setText(titlelist.get(i));
 
     }//=============================================================================================end updateValues();
-
-
-
-
-
-
-
-
-
-
 
     //Load and save lists in Shared Preferences
     public void saveList(){
@@ -333,7 +322,8 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
-        //Help Menu
+        //Open 'help' will take the user to a github page
+        //(in an External Browser) with instructions on how to add links to the radio player.
         MenuItem addItem2= menu.findItem(R.id.item_help);
         addItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

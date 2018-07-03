@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">MPR</string>
-    <string name="search">Search</string>
+    <string name="app_name">AvSPlayer</string>
+    <string name="search">🔍</string>
     <string name="play">▶</string>
     <string name="next">&gt;</string>
     <string name="shuffle">🔀</string>
     <string name="add">+</string>
     <string name="radio">📻</string>
     <string name="music">♬</string>
-    <string name="help">?</string>
+    <string name="help">�</string>
 </resources>
