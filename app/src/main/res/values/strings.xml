@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AvSPlayer</string>
+    <string name="app_name">SAPlayer</string>
     <string name="search">🔍</string>
     <string name="play">▶</string>
     <string name="next">&gt;</string>
