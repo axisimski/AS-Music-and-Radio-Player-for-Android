@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
@@ -333,14 +334,19 @@ public class RadioActivity extends AppCompatActivity {
         });
 
         //Help Menu
-       /* MenuItem addItem2= menu.findItem(R.id.shuffle_btn);
+        MenuItem addItem2= menu.findItem(R.id.item_help);
         addItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("https://raw.githubusercontent.com/axisimski/public/master/helpRadio.txt"));
+                startActivity(intent);
                 return false;
             }
-        });*/
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
