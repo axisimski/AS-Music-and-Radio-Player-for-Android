@@ -332,6 +332,16 @@ public class RadioActivity extends AppCompatActivity {
             }
         });
 
+        //Help Menu
+       /* MenuItem addItem2= menu.findItem(R.id.shuffle_btn);
+        addItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                return false;
+            }
+        });*/
+
         return super.onCreateOptionsMenu(menu);
     }
     //==============================================================================================end SearchMenu();
