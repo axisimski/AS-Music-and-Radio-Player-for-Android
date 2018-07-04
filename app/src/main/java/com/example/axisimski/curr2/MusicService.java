@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class MusicService extends Service {
     }
     //====================================================================================================
 
+    @SuppressWarnings("unchecked")
     @Override
     public int onStartCommand(final Intent intent, int flags, int startID){
 
@@ -66,11 +68,11 @@ public class MusicService extends Service {
             List tempName = gson.fromJson(jsonName, new TypeToken<List<String>>() {
             }.getType());
             songTitleList.clear();
-            songTitleList.addAll((List) tempName);
+            songTitleList.addAll(tempName);
             List tempURL = gson.fromJson(jsonURL, new TypeToken<List<String>>() {
             }.getType());
             songList.clear();
-            songList.addAll((List) tempURL);
+            songList.addAll(tempURL);
          }
 
         try {
@@ -89,9 +91,10 @@ public class MusicService extends Service {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
 
-//                    if(intent.getIntExtra("SEEK",0)>1) {
+                    //(Remember seek location)
+                   //if(intent.getIntExtra("SEEK",0)>1) {
                        // mediaPlayer.seekTo(intent.getIntExtra("SEEK",0));
-  //                  }
+                  //}
                     mediaPlayer.start();
                 }
             });
@@ -104,13 +107,9 @@ public class MusicService extends Service {
                 }
             });
 
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         return START_NOT_STICKY;
 
     }

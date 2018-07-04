@@ -148,14 +148,22 @@ public class RadioActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if(list.size()>position) {
-                    play.playMusic(list.get(position), titlelist, list, intent, getApplicationContext(),
-                            serviceConnection);
+                    CheckNetwork CN=new CheckNetwork();
 
-                    sp.edit().putString("TitleLastPlayed", titlelist.get(position)).apply();
-                    sp.edit().putBoolean("Radio", true).apply();
-                    sp.edit().putBoolean("isPlaying",true).apply();
-                    updateValues(position);
-                    saveList();
+                    if(CN.connectionAvailible(getApplicationContext())) {
+                        play.playMusic(list.get(position), titlelist, list, intent, getApplicationContext(),
+                                serviceConnection);
+
+                        sp.edit().putString("TitleLastPlayed", titlelist.get(position)).apply();
+                        sp.edit().putBoolean("Radio", true).apply();
+                        sp.edit().putBoolean("isPlaying", true).apply();
+                        updateValues(position);
+                        saveList();
+                    }
+
+                    else{
+                        Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
