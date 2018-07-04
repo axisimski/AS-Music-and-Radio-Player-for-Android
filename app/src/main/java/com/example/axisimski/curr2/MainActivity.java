@@ -94,9 +94,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Scanning complete...Restart app to view music files", Toast.LENGTH_LONG).show();
          }
 
-        if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)) {
+        if(sp.getBoolean("isPlaying", false)&&sp.getBoolean("Radio", false)&&!firstPlay) {
             songName_tv.setText(sp.getString("TitleLastPlayed", ""));
             play_button.setText("■");
+        }
+
+        if(sp.getBoolean("isPlaying", false)&&firstPlay) {
+            sp.edit().putBoolean("isPlaying", false).apply();
         }
 
         if(indexLastSong>list.size()){
@@ -184,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         firstPlay=false;
         sp.edit().putBoolean("Radio", false).apply();
         sp.edit().putBoolean("isPlaying", true).apply();
-
 
     }//=============================================================================================end updateValues();
 
@@ -366,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
-        if(MusicService.isPlaying()) {
+        if(sp.getBoolean("isPlaying", false)) {
              songName_tv.setText(sp.getString("TitleLastPlayed", ""));
 
             if(sp.getBoolean("Radio", false)){
@@ -384,5 +387,4 @@ public class MainActivity extends AppCompatActivity {
 
     }//=============================================================================================end onRestart();
 
-
-}//End class();
+ }//End class();

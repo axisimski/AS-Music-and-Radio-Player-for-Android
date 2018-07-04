@@ -147,6 +147,8 @@ public class MusicService extends Service {
         mediaPlayer.release();
     }
 
+
+
     //MediaPlayer Functions
     public void pause(){
         mediaPlayer.pause();
